@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="author" content="Ndubuisi Jr Chukuigwe">
+    <link rel="stylesheet" href="~/css/index.css" />
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <header>
+        <h1 class="text-block">Payment</h1>
+    </header>
+    <div class="body-content">
+        <h3 id="popup">@ViewData["popup"]</h3>
+        <label id="user-id" class="text-block">@ViewData["UserId"]</label>
+        <label id="user-firstname" class="text-block">@ViewData["UserFirstName"]</label>
+        <label id="user-lastname" class="text-block">@ViewData["UserLastName"]</label>
+        <label id="user-email" class="text-block">@ViewData["UserEmail"]</label>
+        <label id="user-amount" class="text-block">@ViewData["UserAmount"]</label>
+        <hr />
+        <footer>
+            <center>
+                <p>&copy; 2020 - FluentMessenger.</p>
+            </center>
+        </footer>
+    </div>
+    <script type="text/javaScript" src="~/js/index.js"></script>
+</body>
+</html>

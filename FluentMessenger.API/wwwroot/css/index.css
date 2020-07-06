@@ -1,0 +1,8 @@
+﻿.text-block{
+    display:block;
+    position:center;
+}
+.body-content {
+    box-shadow: 5px 5px 20px #808080;
+    position: center;
+}

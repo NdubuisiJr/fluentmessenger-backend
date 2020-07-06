@@ -1,0 +1,19 @@
+version: '3'
+services:
+  postgresdb:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=Chukuigwe@1
+    ports:
+      - "5432:5432"
+  fluentmessengerapi:
+    build: '.'
+    ports:
+      - "5000:5000"
+    depends_on: 
+      - postgresdb
+    environment:
+      - HOST=postgresdb
+      - USER_ID=postgres
+      - USER_PASSWORD=Chukuigwe@1
+  
