@@ -1,19 +1,24 @@
 version: '3'
+volumes:
+  fluent_data:
+    name: ${VOLUME_ID}
 services:
   postgresdb:
     image: postgres
     environment:
-      - POSTGRES_PASSWORD=Chukuigwe@1
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
+    volumes: 
+      - fluent_data:/var/lib/postgresql/data
   fluentmessengerapi:
     build: '.'
     ports:
-      - "5000:5000"
+      - "8080:80"
     depends_on: 
       - postgresdb
     environment:
-      - HOST=postgresdb
-      - USER_ID=postgres
-      - USER_PASSWORD=Chukuigwe@1
+      - HOST=${HOST}
+      - USER_ID=${USER_ID}
+      - USER_PASSWORD=${POSTGRES_PASSWORD}
   

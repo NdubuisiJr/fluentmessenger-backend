@@ -34,10 +34,7 @@ namespace FluentMessenger.API {
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => {
-                    var port = Environment.GetEnvironmentVariable("PORT");
-                    if(port is null)
-                        port="5000";
-                    webBuilder.UseStartup<Startup>().UseUrls("http://*:" + port);
+                    webBuilder.UseStartup<Startup>().UseUrls("http://*:" + "80");
                 });
     }
 }

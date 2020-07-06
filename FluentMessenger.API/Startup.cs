@@ -84,12 +84,10 @@ namespace FluentMessenger.API {
             services.AddScoped<IRepository<Message>, MessageRepository>();
             services.AddScoped<IContactMessageRepository<ContactMessagesReceived>, MessageReceivedRepository>();
             services.AddScoped<IContactMessageRepository<ContactMessagesNotReceived>, MessageNotReceivedRepository>();
+            _connectionString=BuildConnectionString();
             services.AddDbContext<FluentDbContext>(options => {
-                var connection=Environment.GetEnvironmentVariable("DATABASE_URL");
-                if(connection is null)
-                    connection=BuildConnectionString();
-                options.UseNpgsql(connection);
-                Console.WriteLine($"Using DB={connection}");
+                options.UseNpgsql(_connectionString);
+                Console.WriteLine($"Using DB={_connectionString}");
             });
 
             //Add SecurityService
@@ -118,17 +116,12 @@ namespace FluentMessenger.API {
 
         private string BuildConnectionString(){
             var host = Environment.GetEnvironmentVariable("HOST");
-            var userId=Environment.GetEnvironmentVariable("USER_ID");
-            var userPassword=Environment.GetEnvironmentVariable("USER_PASSWORD");
-            var database="fluentDB";
-            if(host is null){
-                host="ec2-35-172-73-125.compute-1.amazonaws.com";
-                database="d73m7sgmrg465o";
-                userId="koiqzcpxvqugma";
-                userPassword=Configuration.GetConnectionString($"connectionPass");
-            }
-            var connection=$"User ID={userId};Password={userPassword};Host={host};Port=5432;Database={database};Integrated Security=true;Pooling=true;";
+            var userId = Environment.GetEnvironmentVariable("USER_ID");
+            var userPassword = Environment.GetEnvironmentVariable("USER_PASSWORD");
+            var database = "fluentDB";
+            var connection=$"User ID={userId};Password={userPassword};Server={host};Port=5432;Database={database};Integrated Security=true;Pooling=true;";
             return connection;
         }
+        private string _connectionString;
     }
 }
