@@ -1,7 +1,6 @@
 version: '3'
 volumes:
-  fluent_data:
-    name: ${VOLUME_ID}
+  fluent_data: 
 services:
   postgresdb:
     image: postgres
