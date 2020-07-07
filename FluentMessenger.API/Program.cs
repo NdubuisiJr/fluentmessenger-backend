@@ -10,18 +10,15 @@ namespace FluentMessenger.API {
     public class Program {
         public static void Main(string[] args) {
             var host = CreateHostBuilder(args).Build();
-            ClearDatabase(host);
+            ApplyMigrations(host);
             host.Run();
         }
 
-        private static void ClearDatabase(IHost host) {
+        private static void ApplyMigrations(IHost host) {
             // migrate the database.  Best practice = in Main, using service scope
             using (var scope = host.Services.CreateScope()) {
                 try {
                     var context = scope.ServiceProvider.GetService<FluentDbContext>();
-                    // for demo purposes, delete the database & migrate on startup so 
-                    // we can start with a clean slate
-                    //context.Database.EnsureDeleted();
                     context.Database.Migrate();
                 }
                 catch (Exception ex) {
@@ -35,6 +32,6 @@ namespace FluentMessenger.API {
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => {
                     webBuilder.UseStartup<Startup>().UseUrls("http://*:" + "80");
-                });
+            });
     }
 }
