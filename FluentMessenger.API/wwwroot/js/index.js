@@ -38,7 +38,7 @@ function payWithPaystack() {
 
 function PostRequest(object) {
     const httpRequest = new XMLHttpRequest();
-    httpRequest.open("POST", "https://fluentmessengerapi.herokuapp.com/api/payment");
+    httpRequest.open("POST", "http://13.245.16.209:80/api/payment");
     httpRequest.setRequestHeader("Content-Type", "application/json");
     httpRequest.send(JSON.stringify(object));
 }
