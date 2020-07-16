@@ -17,9 +17,10 @@ using FluentMessenger.API.Utils;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.DataProtection;
-using System.IO;
 using Secret = FluentMessenger.API.Utils.Secret;
+using System.Reflection;
+using System.IO;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace FluentMessenger.API {
     public class Startup {
@@ -32,12 +33,17 @@ namespace FluentMessenger.API {
         public void ConfigureServices(IServiceCollection services) {
             //Add the use of controllers and views. Chain NewtonsoftJon and xml serializers
             services.AddControllersWithViews(setupAction => {
+                //setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+                // Add other global Response StatusCodes
+
                 setupAction.ReturnHttpNotAcceptable = true;
+
+                setupAction.OutputFormatters.Add(new XmlSerializerOutputFormatter());
+
             }).AddNewtonsoftJson(setupAction => {
                 setupAction.SerializerSettings.ContractResolver =
                 new CamelCasePropertyNamesContractResolver();
-            }).AddXmlDataContractSerializerFormatters()
-              .ConfigureApiBehaviorOptions(setupAction => {
+            }).ConfigureApiBehaviorOptions(setupAction => {
                   setupAction.InvalidModelStateResponseFactory = context => {
                       var problemDetails = new ValidationProblemDetails(context.ModelState) {
                           Type = "https://api.fluentMessenger.com/modelvalidationproblem",
@@ -92,6 +98,22 @@ namespace FluentMessenger.API {
 
             //Add SecurityService
             services.AddScoped<ISecurityService, SecurityService>();
+            services.AddSwaggerGen(setupAction => {
+                setupAction.SwaggerDoc("Docs",
+                    new Microsoft.OpenApi.Models.OpenApiInfo() {
+                        Title = "Fluent Docs",
+                        Version = "1",
+                        Description="This is the backend for the fluent messenger mobile application",
+                        Contact= new Microsoft.OpenApi.Models.OpenApiContact {
+                            Email="ndubuisijrchukuigwe@gmail.com",
+                            Name="Ndubuisi Jr Chukuigwe",
+                            Url= new Uri("https://www.github.com/ndubuisijr")
+                        }
+                    });
+                var xmlDocFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var path = Path.Combine(AppContext.BaseDirectory, xmlDocFile);
+                setupAction.IncludeXmlComments(path);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
@@ -107,6 +129,11 @@ namespace FluentMessenger.API {
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseSwagger();
+            app.UseSwaggerUI(setupAction => {
+                setupAction.SwaggerEndpoint("/swagger/Docs/swagger.json", "Fluent Docs");
+                setupAction.RoutePrefix = "";
+            });
             app.UseStaticFiles();
 
             app.UseEndpoints(endpoints => {
@@ -115,9 +142,9 @@ namespace FluentMessenger.API {
         }
 
         private string BuildConnectionString(){
-            var host = Environment.GetEnvironmentVariable("HOST");
-            var userId = Environment.GetEnvironmentVariable("USER_ID");
-            var userPassword = Environment.GetEnvironmentVariable("USER_PASSWORD");
+            var host = Environment.GetEnvironmentVariable("HOST")??"localhost";
+            var userId = Environment.GetEnvironmentVariable("USER_ID")??"postgres";
+            var userPassword = Environment.GetEnvironmentVariable("USER_PASSWORD")??"test";
             var database = "fluentDB";
             var connection=$"User ID={userId};Password={userPassword};Server={host};Port=5432;Database={database};Integrated Security=true;Pooling=true;";
             return connection;

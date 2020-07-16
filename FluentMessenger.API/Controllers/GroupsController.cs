@@ -23,12 +23,14 @@ namespace FluentMessenger.API.Controllers {
         private readonly IRepository<User> _userRepo;
         private readonly IRepository<Group> _groupRepo;
         private readonly IMapper _mapper;
+        private readonly IRepository<Message> _messageRepo;
 
         public GroupsController(IRepository<User> userRepo,
-            IRepository<Group> groupRepo, IMapper mapper) {
+            IRepository<Group> groupRepo, IMapper mapper, IRepository<Message> messageRepo) {
             _userRepo = userRepo;
             _groupRepo = groupRepo;
             _mapper = mapper;
+            _messageRepo = messageRepo;
         }
 
         [HttpGet]

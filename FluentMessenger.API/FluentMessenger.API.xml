@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FluentMessenger.API</name>
+    </assembly>
+    <members>
+        <member name="M:FluentMessenger.API.Controllers.UsersController.GetUsers">
+            <summary>
+            Gets all Users
+            </summary>
+            <returns>
+             An array of users
+            </returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.UsersController.GetUser(System.Int32)">
+            <summary>
+            Returns a UserDto give the user's Id 
+            </summary>
+            <param name="userId">The user's Id</param>
+            <returns>A userDto</returns>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.UserDto">
+            <summary>
+            The structure of a returned user
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.Id">
+            <summary>
+            The user's Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.Surname">
+            <summary>
+            The user's Surname
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.OtherNames">
+            <summary>
+            The user's other names
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.Email">
+            <summary>
+            The user's email address
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.Phone">
+            <summary>
+            The user's phone number. In the nigerian format. without national code
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.SMSCredit">
+            <summary>
+            The amount of SMS unit the user currently has
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.VerificationCode">
+            <summary>
+            The code used for verifying the user
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.Token">
+            <summary>
+            The authentication token issued to the user
+            </summary>
+        </member>
+    </members>
+</doc>

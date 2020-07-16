@@ -5,5 +5,6 @@ namespace FluentMessenger.API.Dtos {
         public int Id { get; set; }
         public string Message { get; set; }
         public DateTime SentTime { get; set; }
+        public bool IsDraft { get; set; }
     }
 }

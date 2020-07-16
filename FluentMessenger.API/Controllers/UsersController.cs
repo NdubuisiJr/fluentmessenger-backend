@@ -3,6 +3,7 @@ using FluentMessenger.API.Dtos;
 using FluentMessenger.API.Entities;
 using FluentMessenger.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,11 @@ namespace FluentMessenger.API.Controllers {
     [Authorize]
     [ApiController]
     [Route("api/users")]
+    [Produces("application/json","application/xml")]//To ensure that we only have application/json as the accept header. this can also be added globally on the filters property
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)] //Put the generic ones on the controller level
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]   // Or we can put them in the startup class. inside the add MVC services
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class UsersController : ControllerBase {
         private readonly IRepository<User> _userRepo;
         private readonly IMapper _mapper;
@@ -33,11 +39,27 @@ namespace FluentMessenger.API.Controllers {
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Gets all Users
+        /// </summary>
+        /// <returns>
+        ///  An array of users
+        /// </returns>
         [HttpGet]
         public ActionResult<IEnumerable<UserDto>> GetUsers() {
             return Ok(_mapper.Map<IEnumerable<UserDto>>(_userRepo.GetAll()));
         }
 
+        /// <summary>
+        /// Returns a UserDto give the user's Id 
+        /// </summary>
+        /// <param name="userId">The user's Id</param>
+        /// <returns>A userDto</returns>
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{userId}", Name = "GetUser")]
         public ActionResult<UserDto> GetUser(int userId) {
             var user = _userRepo.Get(userId);
