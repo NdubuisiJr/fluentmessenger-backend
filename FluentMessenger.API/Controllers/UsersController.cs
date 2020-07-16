@@ -20,11 +20,6 @@ namespace FluentMessenger.API.Controllers {
     [Authorize]
     [ApiController]
     [Route("api/users")]
-    [Produces("application/json","application/xml")]//To ensure that we only have application/json as the accept header. this can also be added globally on the filters property
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)] //Put the generic ones on the controller level
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]   // Or we can put them in the startup class. inside the add MVC services
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class UsersController : ControllerBase {
         private readonly IRepository<User> _userRepo;
         private readonly IMapper _mapper;
@@ -40,25 +35,25 @@ namespace FluentMessenger.API.Controllers {
         }
 
         /// <summary>
-        /// Gets all Users
+        /// Gets all Users.\
+        /// Requires Bearer Token on the Authorization Header
         /// </summary>
         /// <returns>
         ///  An array of users
         /// </returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<UserDto>> GetUsers() {
             return Ok(_mapper.Map<IEnumerable<UserDto>>(_userRepo.GetAll()));
         }
 
         /// <summary>
-        /// Returns a UserDto give the user's Id 
+        /// Returns a UserDto give the user's Id.\
+        /// Requires Bearer Token on the Authorization Header
         /// </summary>
         /// <param name="userId">The user's Id</param>
         /// <returns>A userDto</returns>
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{userId}", Name = "GetUser")]
         public ActionResult<UserDto> GetUser(int userId) {
@@ -69,8 +64,15 @@ namespace FluentMessenger.API.Controllers {
             return Ok(_mapper.Map<UserDto>(user));
         }
 
+        /// <summary>
+        /// Creates a user
+        /// </summary>
+        /// <param name="userForCreation">The object required for creating a user</param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public ActionResult<UserDto> CreateUser(
             [FromBody] UserForCreationDto userForCreation) {
 
@@ -103,7 +105,27 @@ namespace FluentMessenger.API.Controllers {
             return CreatedAtRoute("GetUser", new { userId = userDto.Id }, userDto);
         }
 
+        /// <summary>
+        /// Carries out a partial update a user model.\ 
+        /// Requires Bearer Token on the Authorization Header
+        /// </summary>
+        /// <param name="userId">The user's Id</param>
+        /// <param name="userForUpdatedDocument">The json patch document 
+        /// required for updating the user</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request (this request updates the User's SMSCredit) \ 
+        /// [ \
+        ///   { \
+        ///      "op": "replace", \
+        ///     "path": "/SMSCredit", \
+        ///     "value": "345" \
+        ///    } \
+        /// ] 
+        /// </remarks>
         [HttpPost("{userId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult UpdateUser(int userId,
             JsonPatchDocument<UserForUpdateDto> userForUpdatedDocument) {
 
@@ -136,7 +158,15 @@ namespace FluentMessenger.API.Controllers {
             return NoContent();
         }
 
+        /// <summary>
+        /// This Deletes a user.\
+        /// Requires Bearer Token on the Authorization Header
+        /// </summary>
+        /// <param name="userId">The user's id</param>
+        /// <returns></returns>
         [HttpDelete("{userId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult DeleteUser(int userId) {
             var user = _userRepo.Get(userId);
             if (user == null) {

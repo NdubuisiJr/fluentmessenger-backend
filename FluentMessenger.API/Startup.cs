@@ -33,7 +33,18 @@ namespace FluentMessenger.API {
         public void ConfigureServices(IServiceCollection services) {
             //Add the use of controllers and views. Chain NewtonsoftJon and xml serializers
             services.AddControllersWithViews(setupAction => {
-                //setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+                setupAction.Filters.Add(new ProducesResponseTypeAttribute(
+                            StatusCodes.Status500InternalServerError));
+                setupAction.Filters.Add(new ProducesResponseTypeAttribute(
+                            StatusCodes.Status400BadRequest));
+                setupAction.Filters.Add(new ProducesResponseTypeAttribute(
+                            StatusCodes.Status406NotAcceptable));
+                setupAction.Filters.Add(new ProducesResponseTypeAttribute(
+                            StatusCodes.Status401Unauthorized));
+                setupAction.Filters.Add(new ProducesAttribute(
+                            "application/json", new string[] { "application/xml" }));
+                setupAction.Filters.Add(new ConsumesAttribute(
+                            "application/json", new string[] { }));
                 // Add other global Response StatusCodes
 
                 setupAction.ReturnHttpNotAcceptable = true;

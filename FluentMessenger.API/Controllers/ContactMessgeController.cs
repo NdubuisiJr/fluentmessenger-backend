@@ -3,6 +3,7 @@ using FluentMessenger.API.Dtos;
 using FluentMessenger.API.Entities;
 using FluentMessenger.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,17 @@ namespace FluentMessenger.API.Controllers {
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Returns all Received and Missed messages sent to a give contact or 
+        /// returns all the contacts that Received and Missed a given message.\
+        /// Requires Bearer token
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="contactMessageQuery"></param>
+        /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetAll(int userId,
             [FromQuery] ContactMessageQuery contactMessageQuery) {
 
@@ -46,7 +57,7 @@ namespace FluentMessenger.API.Controllers {
 
             if (contactMessageQuery.ContactId > 0) {
                 if (_contactRepo.Get(contactMessageQuery.ContactId) is null)
-                    return BadRequest();
+                    return NotFound();
 
                 var messagesReceived = _receivedRepo.GetMessages(contactMessageQuery.ContactId);
                 var messagesNotReceived = _notReceivedRepo.GetMessages(contactMessageQuery.ContactId);
@@ -57,7 +68,7 @@ namespace FluentMessenger.API.Controllers {
             }
             else {
                 if (_messageRepo.Get(contactMessageQuery.MessageId) is null)
-                    return BadRequest();
+                    return NotFound();
 
                 var contactReceived = _receivedRepo.GetContacts(contactMessageQuery.MessageId);
                 var contactNotReceived = _notReceivedRepo.GetContacts(contactMessageQuery.MessageId);
@@ -68,7 +79,15 @@ namespace FluentMessenger.API.Controllers {
             }
         }
 
+        /// <summary>
+        /// Create a contact message received or not received relationship (joining table).\
+        /// Requires a Bearer Token
+        /// </summary>
+        /// <param name="userId">The user's id</param>
+        /// <param name="contactMessageForCreation">The object required</param>
+        /// <returns></returns>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult CreateContactMessage(int userId,
             [FromBody] ContactMessageForCreationDto contactMessageForCreation) {
             var user = _userRepo.Get(userId);
@@ -98,7 +117,16 @@ namespace FluentMessenger.API.Controllers {
             return NoContent();
         }
 
+        /// <summary>
+        /// Adds contacts or messages to a group \
+        /// Requires Bearer token
+        /// </summary>
+        /// <param name="userId">The user's id</param>
+        /// <param name="groupId">The group's Id</param>
+        /// <param name="contactMessage">The contact message object.</param>
+        /// <returns></returns>
         [HttpPost("{groupId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult CreateContactMessage(int userId, int groupId,
            [FromBody] ContactMessageDto contactMessage) {
             var user = _userRepo.Get(userId, true);

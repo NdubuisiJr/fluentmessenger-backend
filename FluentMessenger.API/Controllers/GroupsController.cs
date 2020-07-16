@@ -5,6 +5,7 @@ using FluentMessenger.API.Exceptions;
 using FluentMessenger.API.Extensions;
 using FluentMessenger.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -23,17 +24,23 @@ namespace FluentMessenger.API.Controllers {
         private readonly IRepository<User> _userRepo;
         private readonly IRepository<Group> _groupRepo;
         private readonly IMapper _mapper;
-        private readonly IRepository<Message> _messageRepo;
 
         public GroupsController(IRepository<User> userRepo,
-            IRepository<Group> groupRepo, IMapper mapper, IRepository<Message> messageRepo) {
+            IRepository<Group> groupRepo, IMapper mapper) {
             _userRepo = userRepo;
             _groupRepo = groupRepo;
             _mapper = mapper;
-            _messageRepo = messageRepo;
         }
 
+        /// <summary>
+        /// Retrieves all the groups created by a user.\
+        /// Requires Bearer Token.
+        /// </summary>
+        /// <param name="userId">The user's Id</param>
+        /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<IEnumerable<GroupDto>> GetGroups(int userId) {
 
             var user = _userRepo.Get(userId);
@@ -45,7 +52,16 @@ namespace FluentMessenger.API.Controllers {
             return Ok(_mapper.Map<IEnumerable<GroupDto>>(groups));
         }
 
+        /// <summary>
+        /// Gets a single group created by a user.\
+        /// Requires Bearer token
+        /// </summary>
+        /// <param name="userId">The user's Id</param>
+        /// <param name="groupId">The Group's Id</param>
+        /// <returns></returns>
         [HttpGet("{groupId}", Name = "GetGroup")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<GroupDto> GetGroup(int userId, int groupId) {
             var user = _userRepo.Get(userId, true);
             if (user == null) {
@@ -60,7 +76,16 @@ namespace FluentMessenger.API.Controllers {
             return Ok(_mapper.Map<GroupDto>(group));
         }
 
+        /// <summary>
+        /// Delete's a group created by a user.\
+        /// Requires Bearer's Token
+        /// </summary>
+        /// <param name="userId">The user's Id</param>
+        /// <param name="groupId">The group's Id</param>
+        /// <returns></returns>
         [HttpDelete("{groupId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult DeleteUser(int userId, int groupId) {
 
             var user = _userRepo.Get(userId, true);
@@ -79,7 +104,16 @@ namespace FluentMessenger.API.Controllers {
             return NoContent();
         }
 
+        /// <summary>
+        /// Create's a group.\
+        /// Requires Bearer token
+        /// </summary>
+        /// <param name="userId">The id for the user creating the group</param>
+        /// <param name="groupForCreationDto">The object required for creating a group</param>
+        /// <returns></returns>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<GroupDto> CreateGroup(int userId,
             [FromBody] GroupForCreationDto groupForCreationDto) {
 
@@ -101,7 +135,27 @@ namespace FluentMessenger.API.Controllers {
                 _mapper.Map<GroupDto>(group));
         }
 
+        /// <summary>
+        /// Updates a group.\
+        /// Requires Bearer Token.
+        /// </summary>
+        /// <param name="userId">The user's Id</param>
+        /// <param name="groupId">The group's Id</param>
+        /// <param name="patchDocument">The json patch document required</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request (this request updates the group's title) \ 
+        /// [ \
+        ///   { \
+        ///      "op": "replace", \
+        ///     "path": "/Title", \
+        ///     "value": "New title" \
+        ///    } \
+        /// ] 
+        /// </remarks>
         [HttpPost("{groupId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult UpdateGroup(int userId, int groupId,
             [FromBody] JsonPatchDocument<GroupForCreationDto> patchDocument) {
 

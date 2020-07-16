@@ -3,6 +3,7 @@ using FluentMessenger.API.Dtos;
 using FluentMessenger.API.Entities;
 using FluentMessenger.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -26,7 +27,13 @@ namespace FluentMessenger.API.Controllers {
             _securityService = securityService;
         }
 
+        /// <summary>
+        /// Fetches SMS credentials.\
+        /// Requires Bearer Token
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("credentials")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetServerCredentials() {
             var credentials = ReturnServerCredentials();
             return Ok(new {
@@ -35,8 +42,15 @@ namespace FluentMessenger.API.Controllers {
             });
         }
 
+        /// <summary>
+        /// Used for changing user's password. it generates a new verification
+        /// code that is used to authenticate the user's credentials.
+        /// </summary>
+        /// <param name="passwordResetDto">A password reset object</param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("resetpassword")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<UserDto> ResetPassword(
           [FromBody] PasswordResetDto passwordResetDto) {
             if (passwordResetDto is null) {
@@ -59,8 +73,16 @@ namespace FluentMessenger.API.Controllers {
             return Ok(userDto);
         }
 
+        /// <summary>
+        /// This methods verifies a user given it's email, phone number and verification code. 
+        /// It can be used for first time verification or for password reset verification.
+        /// </summary>
+        /// <param name="userForVerificationDto"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("verify")]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<UserDto> VerifyContact(
            [FromBody] UserForVerificationDto userForVerificationDto) {
             if (userForVerificationDto is null) {
@@ -89,9 +111,16 @@ namespace FluentMessenger.API.Controllers {
             return Ok(userDto);
         }
 
-
+        /// <summary>
+        /// Logs a user's into the api by generating a unique token for the login.
+        /// </summary>
+        /// <param name="retrieveUserDto">The object required for login</param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public ActionResult<UserDto> RetrieveUser(
             [FromBody] RetrieveUserDto retrieveUserDto) {
 

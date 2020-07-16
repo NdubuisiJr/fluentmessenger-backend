@@ -4,9 +4,100 @@
         <name>FluentMessenger.API</name>
     </assembly>
     <members>
+        <member name="M:FluentMessenger.API.Controllers.GroupsController.GetGroups(System.Int32)">
+            <summary>
+            Retrieves all the groups created by a user.\
+            Requires Bearer Token.
+            </summary>
+            <param name="userId">The user's Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.GroupsController.GetGroup(System.Int32,System.Int32)">
+            <summary>
+            Gets a single group created by a user.\
+            Requires Bearer token
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="groupId">The Group's Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.GroupsController.DeleteUser(System.Int32,System.Int32)">
+            <summary>
+            Delete's a group created by a user.\
+            Requires Bearer's Token
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="groupId">The group's Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.GroupsController.CreateGroup(System.Int32,FluentMessenger.API.Dtos.GroupForCreationDto)">
+            <summary>
+            Create's a group.\
+            Requires Bearer token
+            </summary>
+            <param name="userId">The id for the user creating the group</param>
+            <param name="groupForCreationDto">The object required for creating a group</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.GroupsController.UpdateGroup(System.Int32,System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{FluentMessenger.API.Dtos.GroupForCreationDto})">
+            <summary>
+            Updates a group.\
+            Requires Bearer Token.
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="groupId">The group's Id</param>
+            <param name="patchDocument">The json patch document required</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.LoginController.GetServerCredentials">
+            <summary>
+            Fetches SMS credentials.\
+            Requires Bearer Token
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.LoginController.ResetPassword(FluentMessenger.API.Dtos.PasswordResetDto)">
+            <summary>
+            Used for changing user's password. it generates a new verification
+            code that is used to authenticate the user's credentials.
+            </summary>
+            <param name="passwordResetDto">A password reset object</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.LoginController.VerifyContact(FluentMessenger.API.Dtos.UserForVerificationDto)">
+            <summary>
+            This methods verifies a user given it's email, phone number and verification code. 
+            It can be used for first time verification or for password reset verification.
+            </summary>
+            <param name="userForVerificationDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.LoginController.RetrieveUser(FluentMessenger.API.Dtos.RetrieveUserDto)">
+            <summary>
+            Logs a user's into the api by generating a unique token for the login.
+            </summary>
+            <param name="retrieveUserDto">The object required for login</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.PaymentController.Index(System.Int32,System.Decimal)">
+            <summary>
+            Returns the payment page
+            </summary>
+            <param name="userId">The user's Id, that wants to make payment</param>
+            <param name="amount">The amount the user wants to pay</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.PaymentController.Index(FluentMessenger.API.Dtos.PaymentVerificationDto)">
+            <summary>
+            This confirms the payment by the user and updates the user's smscredit
+            </summary>
+            <param name="paymentVerification">The input object for confirming payment</param>
+            <returns></returns>
+        </member>
         <member name="M:FluentMessenger.API.Controllers.UsersController.GetUsers">
             <summary>
-            Gets all Users
+            Gets all Users.\
+            Requires Bearer Token on the Authorization Header
             </summary>
             <returns>
              An array of users
@@ -14,10 +105,116 @@
         </member>
         <member name="M:FluentMessenger.API.Controllers.UsersController.GetUser(System.Int32)">
             <summary>
-            Returns a UserDto give the user's Id 
+            Returns a UserDto give the user's Id.\
+            Requires Bearer Token on the Authorization Header
             </summary>
             <param name="userId">The user's Id</param>
             <returns>A userDto</returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.UsersController.CreateUser(FluentMessenger.API.Dtos.UserForCreationDto)">
+            <summary>
+            Creates a user
+            </summary>
+            <param name="userForCreation">The object required for creating a user</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.UsersController.UpdateUser(System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{FluentMessenger.API.Dtos.UserForUpdateDto})">
+            <summary>
+            Carries out a partial update a user model.\ 
+            Requires Bearer Token on the Authorization Header
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="userForUpdatedDocument">The json patch document 
+            required for updating the user</param>
+            <returns></returns>
+            <remarks>
+            Sample request (this request updates the User's SMSCredit) \ 
+            [ \
+              { \
+                 "op": "replace", \
+                "path": "/SMSCredit", \
+                "value": "345" \
+               } \
+            ] 
+            </remarks>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.UsersController.DeleteUser(System.Int32)">
+            <summary>
+            This Deletes a user.\
+            Requires Bearer Token on the Authorization Header
+            </summary>
+            <param name="userId">The user's id</param>
+            <returns></returns>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.GroupForCreationDto">
+            <summary>
+            The object required for creating a group
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.GroupForCreationDto.Title">
+            <summary>
+            The title for the group to be created. It is not unique
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.GroupForCreationDto.Contacts">
+            <summary>
+            An optional list of contacts
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.GroupForCreationDto.Messages">
+            <summary>
+            An optional list of messages
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.PasswordResetDto">
+            <summary>
+            This is the object required for changing a user's password
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.PasswordResetDto.Email">
+            <summary>
+            The user's email
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.PasswordResetDto.Phone">
+            <summary>
+            The user's phone number
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.PaymentVerificationDto">
+            <summary>
+            The input object for confirming payment
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.PaymentVerificationDto.UserId">
+            <summary>
+            The user's Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.PaymentVerificationDto.Email">
+            <summary>
+            The user's email address
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.PaymentVerificationDto.TransactionReference">
+            <summary>
+            The transaction code generated during payment
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.RetrieveUserDto">
+            <summary>
+            The object that defines the required fields for login
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.RetrieveUserDto.Email">
+            <summary>
+            The user's email address
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.RetrieveUserDto.PassWord">
+            <summary>
+            The user's password
+            </summary>
         </member>
         <member name="T:FluentMessenger.API.Dtos.UserDto">
             <summary>
@@ -62,6 +259,96 @@
         <member name="P:FluentMessenger.API.Dtos.UserDto.Token">
             <summary>
             The authentication token issued to the user
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.UserForCreationDto">
+            <summary>
+            The input format for creating a user
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForCreationDto.Surname">
+            <summary>
+            User's surname
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForCreationDto.OtherNames">
+            <summary>
+            User's other names
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForCreationDto.Email">
+            <summary>
+            User's email address
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForCreationDto.Phone">
+            <summary>
+            User's phone number. In Nigerian format (without country code)
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForCreationDto.Password">
+            <summary>
+            User's password with minimum length of 6 and max of 50
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForCreationDto.ComfirmPassword">
+            <summary>
+            Same value provided in the password field
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.UserForUpdateDto">
+            <summary>
+            The data object used for update a user
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForUpdateDto.Email">
+            <summary>
+            The user email's
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForUpdateDto.Phone">
+            <summary>
+            The user's phone number
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForUpdateDto.Password">
+            <summary>
+            The user's password
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForUpdateDto.ComfirmPassword">
+            <summary>
+            The same value passed in the password field
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForUpdateDto.SMSCredit">
+            <summary>
+            The user's smscredit
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.UserForVerificationDto">
+            <summary>
+            The required object used for verifying a user's account
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForVerificationDto.VerificationCode">
+            <summary>
+            The verification code sent to the user's contact details
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForVerificationDto.Email">
+            <summary>
+            The User's email address
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForVerificationDto.Phone">
+            <summary>
+            The user's phone number
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForVerificationDto.IsPasswordReset">
+            <summary>
+            A flag to checck whether is a first time verification or it's for a password reset verification
             </summary>
         </member>
     </members>
