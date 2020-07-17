@@ -24,6 +24,10 @@ namespace FluentMessenger.API.Entities {
 
         public int VerificationCode { get; set; }
 
+        public virtual Sender Sender { get; set; }
+
         public virtual IEnumerable<Group> Groups { get; set; }
+
+        public virtual IEnumerable<MessageTemplate> MessageTemplates { get; set; }
     }
 }

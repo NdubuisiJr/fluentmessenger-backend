@@ -3,15 +3,17 @@ using System;
 using FluentMessenger.API.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FluentMessenger.API.Migrations
 {
     [DbContext(typeof(FluentDbContext))]
-    partial class FluentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200717025930_IsDraftProperty")]
+    partial class IsDraftProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -120,27 +122,6 @@ namespace FluentMessenger.API.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("FluentMessenger.API.Entities.MessageTemplate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("MessageTemplates");
-                });
-
             modelBuilder.Entity("FluentMessenger.API.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -235,15 +216,6 @@ namespace FluentMessenger.API.Migrations
                     b.HasOne("FluentMessenger.API.Entities.Group", "Group")
                         .WithMany("Messages")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("FluentMessenger.API.Entities.MessageTemplate", b =>
-                {
-                    b.HasOne("FluentMessenger.API.Entities.User", "User")
-                        .WithMany("MessageTemplates")
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

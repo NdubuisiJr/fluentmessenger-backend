@@ -4,6 +4,80 @@
         <name>FluentMessenger.API</name>
     </assembly>
     <members>
+        <member name="M:FluentMessenger.API.Controllers.ContactMessgeController.GetAll(System.Int32,FluentMessenger.API.Dtos.ContactMessageQuery)">
+            <summary>
+            Returns all Received and Missed messages sent to a give contact or 
+            returns all the contacts that Received and Missed a given message.\
+            Requires Bearer token
+            </summary>
+            <param name="userId"></param>
+            <param name="contactMessageQuery"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.ContactMessgeController.CreateContactMessage(System.Int32,FluentMessenger.API.Dtos.ContactMessageForCreationDto)">
+            <summary>
+            Create a contact message received or not received relationship (joining table).\
+            Requires a Bearer Token
+            </summary>
+            <param name="userId">The user's id</param>
+            <param name="contactMessageForCreation">The object required</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.ContactMessgeController.CreateContactMessage(System.Int32,System.Int32,FluentMessenger.API.Dtos.ContactMessageDto)">
+            <summary>
+            Adds contacts or messages to a group \
+            Requires Bearer token
+            </summary>
+            <param name="userId">The user's id</param>
+            <param name="groupId">The group's Id</param>
+            <param name="contactMessage">The contact message object.</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.DraftTemplateController.GetDrafts(System.Int32,System.Int32)">
+            <summary>
+            Gets all draft created by a user for a give group.\
+            requires Bearer Token
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="groupId">The group's Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.DraftTemplateController.UpdateDraft(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Updates draft.\
+            Requires Bearer Token
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="groupId">The group's Id</param>
+            <param name="messageId">Id for the message to update</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.DraftTemplateController.GetTemplates(System.Int32)">
+            <summary>
+            Gets all the message templates defined by a user.\
+            Requiress a Bearer token
+            </summary>
+            <param name="userId">The user's id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.DraftTemplateController.CreateTemplates(System.Int32,FluentMessenger.API.Dtos.TemplateDto)">
+            <summary>
+            Creates a message template.\
+            Requires a Bearer Token
+            </summary>
+            <param name="userId">The user's id</param>
+            <param name="templateDto">The template object</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.DraftTemplateController.DeleteTemplate(System.Int32,System.Int32)">
+            <summary>
+            Deletes a message template.\
+            Requires Bearer token
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="templateId">The template Id</param>
+            <returns></returns>
+        </member>
         <member name="M:FluentMessenger.API.Controllers.GroupsController.GetGroups(System.Int32)">
             <summary>
             Retrieves all the groups created by a user.\
@@ -48,6 +122,16 @@
             <param name="groupId">The group's Id</param>
             <param name="patchDocument">The json patch document required</param>
             <returns></returns>
+            <remarks>
+            Sample request (this request updates the group's title) \ 
+            [ \
+              { \
+                 "op": "replace", \
+                "path": "/Title", \
+                "value": "New title" \
+               } \
+            ] 
+            </remarks>
         </member>
         <member name="M:FluentMessenger.API.Controllers.LoginController.GetServerCredentials">
             <summary>
@@ -146,6 +230,94 @@
             <param name="userId">The user's id</param>
             <returns></returns>
         </member>
+        <member name="T:FluentMessenger.API.Dtos.ContactDto">
+            <summary>
+            The object that represents a contact
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactDto.Id">
+            <summary>
+            The contact's Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactDto.FullName">
+            <summary>
+            The contact's full name
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactDto.Number">
+            <summary>
+            The mobile number associated with the contacts
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.ContactMessageDto">
+            <summary>
+            The contact message object that is used to form the joining table
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageDto.ContactsDtos">
+            <summary>
+            A collection of contacts
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageDto.MessageDtos">
+            <summary>
+            A collection of messages
+            </summary>
+        </member>
+        <member name="M:FluentMessenger.API.Dtos.ContactMessageDto.IsConsistent">
+            <summary>
+            Checks to ensure that one of the collection is null
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.ContactMessageForCreationDto">
+            <summary>
+            The object that creates a contactMessage relationship
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageForCreationDto.ContactKeys">
+            <summary>
+            Collection of contact keys
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageForCreationDto.MessageKeys">
+            <summary>
+            collection of message keys
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageForCreationDto.IsReceived">
+            <summary>
+            Flag to differentiate Received and missed
+            </summary>
+        </member>
+        <member name="M:FluentMessenger.API.Dtos.ContactMessageForCreationDto.IsConsistent">
+            <summary>
+            Returns a check to see if the two collections have equal lengths
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.ContactMessageQuery">
+            <summary>
+            The object that holds the query parameters for getting all contact Messages
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageQuery.MessageId">
+            <summary>
+            The messageId
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageQuery.ContactId">
+            <summary>
+            The contact Id
+            </summary>
+        </member>
+        <member name="M:FluentMessenger.API.Dtos.ContactMessageQuery.IsConsistent">
+            <summary>
+            Checks to ensure that only contactId or messageId is supplied
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:FluentMessenger.API.Dtos.GroupForCreationDto">
             <summary>
             The object required for creating a group
@@ -164,6 +336,31 @@
         <member name="P:FluentMessenger.API.Dtos.GroupForCreationDto.Messages">
             <summary>
             An optional list of messages
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.MessageDto">
+            <summary>
+            The object that represents a message and a draft
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.MessageDto.Id">
+            <summary>
+            The mesage Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.MessageDto.Message">
+            <summary>
+            The message body
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.MessageDto.SentTime">
+            <summary>
+            The sent time
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.MessageDto.IsDraft">
+            <summary>
+            A flag that checks if it is draft or a message
             </summary>
         </member>
         <member name="T:FluentMessenger.API.Dtos.PasswordResetDto">
@@ -214,6 +411,21 @@
         <member name="P:FluentMessenger.API.Dtos.RetrieveUserDto.PassWord">
             <summary>
             The user's password
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.TemplateDto">
+            <summary>
+            An object that represent a message template
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.TemplateDto.Id">
+            <summary>
+            The template Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.TemplateDto.Message">
+            <summary>
+            The templated message
             </summary>
         </member>
         <member name="T:FluentMessenger.API.Dtos.UserDto">

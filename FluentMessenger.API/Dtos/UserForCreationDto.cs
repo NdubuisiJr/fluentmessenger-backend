@@ -16,6 +16,7 @@ namespace FluentMessenger.API.Dtos {
         /// User's other names
         /// </summary>
         [StringLength(100)]
+        [Required]
         public string OtherNames { get; set; }
 
         /// <summary>
