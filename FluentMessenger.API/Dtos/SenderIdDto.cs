@@ -12,14 +12,12 @@ namespace FluentMessenger.API.Dtos {
         /// <summary>
         /// The senderId being requested for. Must be less that or equal to 9 char
         /// </summary>
-        [Required]
         [StringLength(9)]
         public string SenderId { get; set; }
 
         /// <summary>
         /// The corresponding key
         /// </summary>
-        [Required]
         public int KeyId { get; set; }
 
         /// <summary>

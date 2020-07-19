@@ -45,29 +45,49 @@ namespace FluentMessenger.API.Controllers {
         /// </summary>
         /// <param name="userId">The user's Id</param>
         /// <param name="senderIdDto">The senderId registration object</param>
+        /// <param name="isForApproval">The flag to switch between setting a new Sender Id
+        /// or checking the approval of the one already set</param>
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        public ActionResult<SenderIdDto> RegisterId(int userId,
+        public ActionResult<SenderIdDto> RegisterId(int userId, bool isForApproval,
             [FromBody] SenderIdDto senderIdDto) {
 
             if (senderIdDto is null) {
                 return BadRequest();
             }
 
-            var user = _userRepo.Get(userId,true);
+            var user = _userRepo.Get(userId, true);
             if (user is null) {
                 return NotFound();
             }
 
-            var sender = _mapper.Map<Sender>(senderIdDto);
-            user.Sender = sender;
-            _userRepo.Update(user);
-            _userRepo.SaveChanges();
+            if (!isForApproval) {
+                if (user.Sender is { }) {
+                    return UnprocessableEntity();
+                }
 
-            return NoContent();
+                var sender = _mapper.Map<Sender>(senderIdDto);
+                user.Sender = sender;
+                _userRepo.Update(user);
+                _userRepo.SaveChanges();
+
+                return NoContent();
+            }
+            else {
+                if (user.Sender is null ) {
+                    return UnprocessableEntity();
+                }
+
+                var sender = _mapper.Map<Sender>(senderIdDto);
+                user.Sender.IsApproved = sender.IsApproved;
+                _userRepo.Update(user);
+                _userRepo.SaveChanges();
+
+                return NoContent();
+            }
         }
     }
 }

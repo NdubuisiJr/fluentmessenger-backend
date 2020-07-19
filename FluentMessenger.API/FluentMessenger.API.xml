@@ -178,6 +178,25 @@
             <param name="paymentVerification">The input object for confirming payment</param>
             <returns></returns>
         </member>
+        <member name="M:FluentMessenger.API.Controllers.SenderController.GetAll(System.Int32)">
+            <summary>
+            Gets all the sender Ids.\
+            Requires Bearer token
+            </summary>
+            <param name="userId">The user id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.SenderController.RegisterId(System.Int32,System.Boolean,FluentMessenger.API.Dtos.SenderIdDto)">
+            <summary>
+            Registers a requested Id to a user's profile.\
+            Requires a Bearer token
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="senderIdDto">The senderId registration object</param>
+            <param name="isForApproval">The flag to switch between setting a new Sender Id
+            or checking the approval of the one already set</param>
+            <returns></returns>
+        </member>
         <member name="M:FluentMessenger.API.Controllers.UsersController.GetUsers">
             <summary>
             Gets all Users.\
@@ -411,6 +430,26 @@
         <member name="P:FluentMessenger.API.Dtos.RetrieveUserDto.PassWord">
             <summary>
             The user's password
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.SenderIdDto">
+            <summary>
+            The object used for requesting a sender Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.SenderIdDto.SenderId">
+            <summary>
+            The senderId being requested for. Must be less that or equal to 9 char
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.SenderIdDto.KeyId">
+            <summary>
+            The corresponding key
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.SenderIdDto.IsApproved">
+            <summary>
+            The flag to check if approved or not
             </summary>
         </member>
         <member name="T:FluentMessenger.API.Dtos.TemplateDto">
