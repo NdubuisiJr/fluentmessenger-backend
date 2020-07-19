@@ -563,5 +563,13 @@
             A flag to checck whether is a first time verification or it's for a password reset verification
             </summary>
         </member>
+        <member name="P:FluentMessenger.API.Entities.Sender.KeyId">
+            <summary>
+            The mapping to the sms key that was used to request the sender id.
+            This value is passed by the client by checking the last 4 characters of the
+            sms key that was used to send the request.
+            if it ends with (Jx9c) pass 1. if it is (glIb) pass 2
+            </summary>
+        </member>
     </members>
 </doc>

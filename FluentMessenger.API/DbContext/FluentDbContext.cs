@@ -24,6 +24,7 @@ namespace FluentMessenger.API.DBContext {
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<Contact> Contacts { get; set; }
+        public virtual DbSet<Sender> Senders { get; set; }
         public virtual DbSet<MessageTemplate> MessageTemplates { get; set; }
         public virtual DbSet<ContactMessagesReceived> ContactMessagesReceived { get; set; }
         public virtual DbSet<ContactMessagesNotReceived> ContactMessagesNotReceived { get; set; }

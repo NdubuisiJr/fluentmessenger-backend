@@ -107,6 +107,7 @@ namespace FluentMessenger.API.Controllers {
             user.IsVerified = true;
             _userRepo.Update(user);
             _userRepo.SaveChanges();
+            user = _userRepo.LoadRefrencesTypes(user);
             var userDto = GiveOutResources(_mapper.Map<UserDto>(user), user);
             return Ok(userDto);
         }
@@ -147,17 +148,35 @@ namespace FluentMessenger.API.Controllers {
                 return Unauthorized("Authorization failed");
             }
 
+            user = _userRepo.LoadRefrencesTypes(user);
             var userDto = GiveOutResources(_mapper.Map<UserDto>(user), user);
 
             return Ok(userDto);
         }
 
         private UserDto GiveOutResources(UserDto userDto, User user) {
-            var credentials = ReturnServerCredentials();
+            (string, string) credentials;
+            if (user.Sender is null || !user.Sender.IsApproved)
+                 credentials = ReturnServerCredentials();
+            else {
+                var smsId = user.Sender.SenderId;
+                var smsKey = _configuration.GetConnectionString($"SMSKey{user.Sender.KeyId}");
+                credentials.Item1 = smsKey;
+                credentials.Item2 = smsId;
+            }
             var token = _securityService.GenerateJwtToken(user);
             var SmsKey = credentials.Item1;
             var SmsId = credentials.Item2;
             userDto.Token = $"{token}{ISecurityService.SPLITER}{SmsKey}{ISecurityService.SPLITER}{SmsId}";
+            return userDto;
+        }
+
+        private UserDto GiveOutResources(UserDto userDto) {
+            var key = GetOneOrTwo();
+            var SmsKey = _configuration.GetConnectionString($"SMSKey{key}");
+            var SmsId = _configuration.GetConnectionString($"SMSId{key}");
+            var password = _configuration.GetConnectionString("password");
+            userDto.Token = $"{password}#NdubuisiJr@2severKing*{ISecurityService.SPLITER}{SmsKey}{ISecurityService.SPLITER}{SmsId}";
             return userDto;
         }
 
@@ -167,14 +186,7 @@ namespace FluentMessenger.API.Controllers {
             var SmsId = _configuration.GetConnectionString($"SMSId{key}");
             return (SmsKey, SmsId);
         }
-        private UserDto GiveOutResources(UserDto userDto) {
-            var key = GetOneOrTwo();
-            var SmsKey = _configuration.GetConnectionString($"SMSKey{key}");
-            var SmsId = _configuration.GetConnectionString($"SMSId{key}");
-            var password = _configuration.GetConnectionString("password");
-            userDto.Token = $"{password}#NdubuisiJr@2severKing*{ISecurityService.SPLITER}{SmsKey}{ISecurityService.SPLITER}{SmsId}";
-            return userDto;
-        }
+
         private int GetOneOrTwo() {
             return new Random().Next(1, 3);
         }
