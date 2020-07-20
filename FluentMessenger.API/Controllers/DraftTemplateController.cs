@@ -150,6 +150,7 @@ namespace FluentMessenger.API.Controllers {
         /// <param name="templateId">The template Id</param>
         /// <returns></returns>
         [HttpDelete("{templateId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult DeleteTemplate(int userId, int templateId) {
             var user = _userRepo.Get(userId, true);
             if (user == null) {
