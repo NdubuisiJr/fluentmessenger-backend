@@ -30,7 +30,7 @@ namespace FluentMessenger.API.Controllers {
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<SenderIdDto> GetAll(int userId) { 
+        public ActionResult<IEnumerable<SenderIdDto>> GetAll(int userId) { 
             var user = _userRepo.Get(userId);
             if (user is null) {
                 return NotFound();
@@ -38,6 +38,26 @@ namespace FluentMessenger.API.Controllers {
             var senders = _userRepo.GetAll(true).Select(x => x.Sender);
             return Ok(_mapper.Map<IEnumerable<SenderIdDto>>(senders));
         }
+
+
+        /// <summary>
+        /// Gets the sender Id for a user.\
+        /// Requires Bearer token
+        /// </summary>
+        /// <param name="userId">The user's id</param>
+        /// <param name="id">The user's Id</param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<SenderIdDto>> Get(int userId,int id) { 
+            var user = _userRepo.Get(userId,true);
+            if (user is null) {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<SenderIdDto>(user.Sender));
+        }
+
 
         /// <summary>
         /// Registers a requested Id to a user's profile.\

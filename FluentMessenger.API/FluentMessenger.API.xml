@@ -186,6 +186,15 @@
             <param name="userId">The user id</param>
             <returns></returns>
         </member>
+        <member name="M:FluentMessenger.API.Controllers.SenderController.Get(System.Int32,System.Int32)">
+            <summary>
+            Gets the sender Id for a user.\
+            Requires Bearer token
+            </summary>
+            <param name="userId">The user's id</param>
+            <param name="id">The user's Id</param>
+            <returns></returns>
+        </member>
         <member name="M:FluentMessenger.API.Controllers.SenderController.RegisterId(System.Int32,System.Boolean,FluentMessenger.API.Dtos.SenderIdDto)">
             <summary>
             Registers a requested Id to a user's profile.\
