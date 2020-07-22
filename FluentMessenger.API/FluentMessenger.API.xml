@@ -133,7 +133,7 @@
             ] 
             </remarks>
         </member>
-        <member name="M:FluentMessenger.API.Controllers.LoginController.GetServerCredentials">
+        <member name="M:FluentMessenger.API.Controllers.LoginController.GetServerCredentials(System.Int32)">
             <summary>
             Fetches SMS credentials.\
             Requires Bearer Token

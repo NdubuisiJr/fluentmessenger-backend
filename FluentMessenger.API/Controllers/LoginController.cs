@@ -32,10 +32,30 @@ namespace FluentMessenger.API.Controllers {
         /// Requires Bearer Token
         /// </summary>
         /// <returns></returns>
-        [HttpGet("credentials")]
+        [HttpGet("credentials/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetServerCredentials() {
-            var credentials = ReturnServerCredentials();
+        public IActionResult GetServerCredentials(int userId) {
+            var user = _userRepo.Get(userId, true);
+            if (user is null) {
+                return NotFound();
+            }
+            (string, string) credentials;
+            if (user.Sender is null) {
+                credentials = ReturnServerCredentials();
+            }
+            else if (!user.Sender.IsApproved) {
+                var smsKey = _configuration.GetConnectionString($"SMSKey{user.Sender.KeyId}");
+                var smsId = _configuration.GetConnectionString($"SMSId{user.Sender.KeyId}");
+                credentials.Item1 = smsKey;
+                credentials.Item2 = smsId;
+            }
+            else {
+                var smsId = user.Sender.SenderId;
+                var smsKey = _configuration.GetConnectionString($"SMSKey{user.Sender.KeyId}");
+                credentials.Item1 = smsKey;
+                credentials.Item2 = smsId;
+            }
+
             return Ok(new {
                 SmsKey = credentials.Item1,
                 SmsId = credentials.Item2
