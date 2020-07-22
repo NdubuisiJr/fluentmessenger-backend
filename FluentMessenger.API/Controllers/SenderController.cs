@@ -50,11 +50,16 @@ namespace FluentMessenger.API.Controllers {
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<SenderIdDto>> Get(int userId,int id) { 
+        public ActionResult<SenderIdDto> Get(int userId,int id) { 
             var user = _userRepo.Get(userId,true);
             if (user is null) {
                 return NotFound();
             }
+
+            if (user.Sender is null){
+                return NotFound();
+            }
+            
             return Ok(_mapper.Map<SenderIdDto>(user.Sender));
         }
 

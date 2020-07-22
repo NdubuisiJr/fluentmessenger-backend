@@ -156,8 +156,15 @@ namespace FluentMessenger.API.Controllers {
 
         private UserDto GiveOutResources(UserDto userDto, User user) {
             (string, string) credentials;
-            if (user.Sender is null || !user.Sender.IsApproved)
-                 credentials = ReturnServerCredentials();
+            if (user.Sender is null){
+                credentials = ReturnServerCredentials();
+            }
+            else if(!user.Sender.IsApproved){
+                var smsKey = _configuration.GetConnectionString($"SMSKey{user.Sender.KeyId}");
+                var smsId = _configuration.GetConnectionString($"SMSId{user.Sender.KeyId}");
+                credentials.Item1=smsKey;
+                credentials.Item2=smsId;
+            }
             else {
                 var smsId = user.Sender.SenderId;
                 var smsKey = _configuration.GetConnectionString($"SMSKey{user.Sender.KeyId}");
