@@ -12,15 +12,14 @@ function payWithPaystack() {
         email: '' + email,
         amount: 1 * Number.parseFloat(amount),
         currency: "NGN",
-        ref: '' + Math.floor((Math.random() * 10000000000) + 1), 
+        ref: 'fluentMsger_' + Math.floor((Math.random() * 10000000000) + 1), 
         firstname: '' + userFirstName,
         lastname: '' + userLastName,
         metadata: {
             custom_fields: [
                 {
                     display_name: "Mobile Number",
-                    variable_name: "mobile_number",
-                    value: "+2348012345678"
+                    variable_name: "mobile_number"
                 }
             ]
         },
