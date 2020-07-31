@@ -81,6 +81,6 @@ namespace FluentMessenger.API.Controllers {
            return View();
         }
 
-        private const decimal CostPerUnit = 250;
+        private const decimal CostPerUnit = 298;
     }
 }
