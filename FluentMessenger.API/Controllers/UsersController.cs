@@ -3,6 +3,7 @@ using FluentMessenger.API.Dtos;
 using FluentMessenger.API.Entities;
 using FluentMessenger.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
@@ -33,11 +34,27 @@ namespace FluentMessenger.API.Controllers {
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Gets all Users.\
+        /// Requires Bearer Token on the Authorization Header
+        /// </summary>
+        /// <returns>
+        ///  An array of users
+        /// </returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<UserDto>> GetUsers() {
             return Ok(_mapper.Map<IEnumerable<UserDto>>(_userRepo.GetAll()));
         }
 
+        /// <summary>
+        /// Returns a UserDto give the user's Id.\
+        /// Requires Bearer Token on the Authorization Header
+        /// </summary>
+        /// <param name="userId">The user's Id</param>
+        /// <returns>A userDto</returns>
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{userId}", Name = "GetUser")]
         public ActionResult<UserDto> GetUser(int userId) {
             var user = _userRepo.Get(userId);
@@ -47,8 +64,15 @@ namespace FluentMessenger.API.Controllers {
             return Ok(_mapper.Map<UserDto>(user));
         }
 
+        /// <summary>
+        /// Creates a user
+        /// </summary>
+        /// <param name="userForCreation">The object required for creating a user</param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public ActionResult<UserDto> CreateUser(
             [FromBody] UserForCreationDto userForCreation) {
 
@@ -81,7 +105,27 @@ namespace FluentMessenger.API.Controllers {
             return CreatedAtRoute("GetUser", new { userId = userDto.Id }, userDto);
         }
 
+        /// <summary>
+        /// Carries out a partial update a user model.\ 
+        /// Requires Bearer Token on the Authorization Header
+        /// </summary>
+        /// <param name="userId">The user's Id</param>
+        /// <param name="userForUpdatedDocument">The json patch document 
+        /// required for updating the user</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request (this request updates the User's SMSCredit) \ 
+        /// [ \
+        ///   { \
+        ///      "op": "replace", \
+        ///     "path": "/SMSCredit", \
+        ///     "value": "345" \
+        ///    } \
+        /// ] 
+        /// </remarks>
         [HttpPost("{userId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult UpdateUser(int userId,
             JsonPatchDocument<UserForUpdateDto> userForUpdatedDocument) {
 
@@ -114,7 +158,15 @@ namespace FluentMessenger.API.Controllers {
             return NoContent();
         }
 
+        /// <summary>
+        /// This Deletes a user.\
+        /// Requires Bearer Token on the Authorization Header
+        /// </summary>
+        /// <param name="userId">The user's id</param>
+        /// <returns></returns>
         [HttpDelete("{userId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult DeleteUser(int userId) {
             var user = _userRepo.Get(userId);
             if (user == null) {

@@ -35,6 +35,7 @@ namespace FluentMessenger.API.Extensions {
                                     Value = message.Message,
                                     SentTime = message.SentTime,
                                     GroupId = group.Id,
+                                    IsDraft=message.IsDraft
                                 });
                             }
 

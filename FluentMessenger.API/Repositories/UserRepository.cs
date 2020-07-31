@@ -16,6 +16,8 @@ namespace FluentMessenger.API.Repositories {
         public IQueryable<User> GetAll(bool include) {
             var set = _dbContext.Set<User>();
             set.Include(x => x.Groups).Load();
+            set.Include(x => x.MessageTemplates).Load();
+            set.Include(x => x.Sender).Load();
             return set;
         }
         public User Get(int Id) {
@@ -26,6 +28,8 @@ namespace FluentMessenger.API.Repositories {
             var user = _dbContext.Users.Find(Id);
             if (user != null) {
                 _dbContext.Entry(user).Collection(x => x.Groups).Load();
+                _dbContext.Entry(user).Collection(x => x.MessageTemplates).Load();
+                _dbContext.Entry(user).Reference(x => x.Sender).Load();
             }
             return user;
         }
@@ -53,6 +57,8 @@ namespace FluentMessenger.API.Repositories {
 
         public User LoadRefrencesTypes(User entity) {
             _dbContext.Entry(entity).Collection(x => x.Groups).Load();
+            _dbContext.Entry(entity).Collection(x => x.MessageTemplates).Load();
+            _dbContext.Entry(entity).Reference(x => x.Sender).Load();
             return entity;
         }
 

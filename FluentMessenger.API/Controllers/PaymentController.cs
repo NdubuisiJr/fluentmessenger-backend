@@ -2,6 +2,7 @@
 using FluentMessenger.API.Entities;
 using FluentMessenger.API.Interfaces;
 using FluentMessenger.API.Utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -24,7 +25,15 @@ namespace FluentMessenger.API.Controllers {
             _appSettings = appSettings;
         }
 
+        /// <summary>
+        /// Returns the payment page
+        /// </summary>
+        /// <param name="userId">The user's Id, that wants to make payment</param>
+        /// <param name="amount">The amount the user wants to pay</param>
+        /// <returns></returns>
         [HttpGet("{UserId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult Index(int userId, [FromQuery] decimal amount) {
             var user = _userRepo.Get(userId);
             if (user == null) {
@@ -39,8 +48,15 @@ namespace FluentMessenger.API.Controllers {
             ViewData["UserLastName"] = user.Surname;
             return View();
         }
-
+        
+        /// <summary>
+        /// This confirms the payment by the user and updates the user's smscredit
+        /// </summary>
+        /// <param name="paymentVerification">The input object for confirming payment</param>
+        /// <returns></returns>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Index([FromBody] 
         PaymentVerificationDto paymentVerification) {
 

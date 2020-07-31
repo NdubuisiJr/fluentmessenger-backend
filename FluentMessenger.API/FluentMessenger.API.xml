@@ -1,0 +1,623 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FluentMessenger.API</name>
+    </assembly>
+    <members>
+        <member name="M:FluentMessenger.API.Controllers.ContactMessgeController.GetAll(System.Int32,FluentMessenger.API.Dtos.ContactMessageQuery)">
+            <summary>
+            Returns all Received and Missed messages sent to a give contact or 
+            returns all the contacts that Received and Missed a given message.\
+            Requires Bearer token
+            </summary>
+            <param name="userId"></param>
+            <param name="contactMessageQuery"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.ContactMessgeController.CreateContactMessage(System.Int32,FluentMessenger.API.Dtos.ContactMessageForCreationDto)">
+            <summary>
+            Create a contact message received or not received relationship (joining table).\
+            Requires a Bearer Token
+            </summary>
+            <param name="userId">The user's id</param>
+            <param name="contactMessageForCreation">The object required</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.ContactMessgeController.CreateContactMessage(System.Int32,System.Int32,FluentMessenger.API.Dtos.ContactMessageDto)">
+            <summary>
+            Adds contacts or messages to a group \
+            Requires Bearer token
+            </summary>
+            <param name="userId">The user's id</param>
+            <param name="groupId">The group's Id</param>
+            <param name="contactMessage">The contact message object.</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.DraftTemplateController.GetDrafts(System.Int32,System.Int32)">
+            <summary>
+            Gets all draft created by a user for a give group.\
+            requires Bearer Token
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="groupId">The group's Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.DraftTemplateController.UpdateDraft(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Updates draft.\
+            Requires Bearer Token
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="groupId">The group's Id</param>
+            <param name="messageId">Id for the message to update</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.DraftTemplateController.GetTemplates(System.Int32)">
+            <summary>
+            Gets all the message templates defined by a user.\
+            Requiress a Bearer token
+            </summary>
+            <param name="userId">The user's id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.DraftTemplateController.CreateTemplates(System.Int32,FluentMessenger.API.Dtos.TemplateDto)">
+            <summary>
+            Creates a message template.\
+            Requires a Bearer Token
+            </summary>
+            <param name="userId">The user's id</param>
+            <param name="templateDto">The template object</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.DraftTemplateController.DeleteTemplate(System.Int32,System.Int32)">
+            <summary>
+            Deletes a message template.\
+            Requires Bearer token
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="templateId">The template Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.GroupsController.GetGroups(System.Int32)">
+            <summary>
+            Retrieves all the groups created by a user.\
+            Requires Bearer Token.
+            </summary>
+            <param name="userId">The user's Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.GroupsController.GetGroup(System.Int32,System.Int32)">
+            <summary>
+            Gets a single group created by a user.\
+            Requires Bearer token
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="groupId">The Group's Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.GroupsController.DeleteUser(System.Int32,System.Int32)">
+            <summary>
+            Delete's a group created by a user.\
+            Requires Bearer's Token
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="groupId">The group's Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.GroupsController.CreateGroup(System.Int32,FluentMessenger.API.Dtos.GroupForCreationDto)">
+            <summary>
+            Create's a group.\
+            Requires Bearer token
+            </summary>
+            <param name="userId">The id for the user creating the group</param>
+            <param name="groupForCreationDto">The object required for creating a group</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.GroupsController.UpdateGroup(System.Int32,System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{FluentMessenger.API.Dtos.GroupForCreationDto})">
+            <summary>
+            Updates a group.\
+            Requires Bearer Token.
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="groupId">The group's Id</param>
+            <param name="patchDocument">The json patch document required</param>
+            <returns></returns>
+            <remarks>
+            Sample request (this request updates the group's title) \ 
+            [ \
+              { \
+                 "op": "replace", \
+                "path": "/Title", \
+                "value": "New title" \
+               } \
+            ] 
+            </remarks>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.LoginController.GetServerCredentials(System.Int32)">
+            <summary>
+            Fetches SMS credentials.\
+            Requires Bearer Token
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.LoginController.ResetPassword(FluentMessenger.API.Dtos.PasswordResetDto)">
+            <summary>
+            Used for changing user's password. it generates a new verification
+            code that is used to authenticate the user's credentials.
+            </summary>
+            <param name="passwordResetDto">A password reset object</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.LoginController.VerifyContact(FluentMessenger.API.Dtos.UserForVerificationDto)">
+            <summary>
+            This methods verifies a user given it's email, phone number and verification code. 
+            It can be used for first time verification or for password reset verification.
+            </summary>
+            <param name="userForVerificationDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.LoginController.RetrieveUser(FluentMessenger.API.Dtos.RetrieveUserDto)">
+            <summary>
+            Logs a user's into the api by generating a unique token for the login.
+            </summary>
+            <param name="retrieveUserDto">The object required for login</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.PaymentController.Index(System.Int32,System.Decimal)">
+            <summary>
+            Returns the payment page
+            </summary>
+            <param name="userId">The user's Id, that wants to make payment</param>
+            <param name="amount">The amount the user wants to pay</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.PaymentController.Index(FluentMessenger.API.Dtos.PaymentVerificationDto)">
+            <summary>
+            This confirms the payment by the user and updates the user's smscredit
+            </summary>
+            <param name="paymentVerification">The input object for confirming payment</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.SenderController.GetAll(System.Int32)">
+            <summary>
+            Gets all the sender Ids.\
+            Requires Bearer token
+            </summary>
+            <param name="userId">The user id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.SenderController.Get(System.Int32,System.Int32)">
+            <summary>
+            Gets the sender Id for a user.\
+            Requires Bearer token
+            </summary>
+            <param name="userId">The user's id</param>
+            <param name="id">The user's Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.SenderController.RegisterId(System.Int32,System.Boolean,FluentMessenger.API.Dtos.SenderIdDto)">
+            <summary>
+            Registers a requested Id to a user's profile.\
+            Requires a Bearer token
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="senderIdDto">The senderId registration object</param>
+            <param name="isForApproval">The flag to switch between setting a new Sender Id
+            or checking the approval of the one already set</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.UsersController.GetUsers">
+            <summary>
+            Gets all Users.\
+            Requires Bearer Token on the Authorization Header
+            </summary>
+            <returns>
+             An array of users
+            </returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.UsersController.GetUser(System.Int32)">
+            <summary>
+            Returns a UserDto give the user's Id.\
+            Requires Bearer Token on the Authorization Header
+            </summary>
+            <param name="userId">The user's Id</param>
+            <returns>A userDto</returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.UsersController.CreateUser(FluentMessenger.API.Dtos.UserForCreationDto)">
+            <summary>
+            Creates a user
+            </summary>
+            <param name="userForCreation">The object required for creating a user</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.UsersController.UpdateUser(System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{FluentMessenger.API.Dtos.UserForUpdateDto})">
+            <summary>
+            Carries out a partial update a user model.\ 
+            Requires Bearer Token on the Authorization Header
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="userForUpdatedDocument">The json patch document 
+            required for updating the user</param>
+            <returns></returns>
+            <remarks>
+            Sample request (this request updates the User's SMSCredit) \ 
+            [ \
+              { \
+                 "op": "replace", \
+                "path": "/SMSCredit", \
+                "value": "345" \
+               } \
+            ] 
+            </remarks>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.UsersController.DeleteUser(System.Int32)">
+            <summary>
+            This Deletes a user.\
+            Requires Bearer Token on the Authorization Header
+            </summary>
+            <param name="userId">The user's id</param>
+            <returns></returns>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.ContactDto">
+            <summary>
+            The object that represents a contact
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactDto.Id">
+            <summary>
+            The contact's Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactDto.FullName">
+            <summary>
+            The contact's full name
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactDto.Number">
+            <summary>
+            The mobile number associated with the contacts
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.ContactMessageDto">
+            <summary>
+            The contact message object that is used to form the joining table
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageDto.ContactsDtos">
+            <summary>
+            A collection of contacts
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageDto.MessageDtos">
+            <summary>
+            A collection of messages
+            </summary>
+        </member>
+        <member name="M:FluentMessenger.API.Dtos.ContactMessageDto.IsConsistent">
+            <summary>
+            Checks to ensure that one of the collection is null
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.ContactMessageForCreationDto">
+            <summary>
+            The object that creates a contactMessage relationship
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageForCreationDto.ContactKeys">
+            <summary>
+            Collection of contact keys
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageForCreationDto.MessageKeys">
+            <summary>
+            collection of message keys
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageForCreationDto.IsReceived">
+            <summary>
+            Flag to differentiate Received and missed
+            </summary>
+        </member>
+        <member name="M:FluentMessenger.API.Dtos.ContactMessageForCreationDto.IsConsistent">
+            <summary>
+            Returns a check to see if the two collections have equal lengths
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.ContactMessageQuery">
+            <summary>
+            The object that holds the query parameters for getting all contact Messages
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageQuery.MessageId">
+            <summary>
+            The messageId
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.ContactMessageQuery.ContactId">
+            <summary>
+            The contact Id
+            </summary>
+        </member>
+        <member name="M:FluentMessenger.API.Dtos.ContactMessageQuery.IsConsistent">
+            <summary>
+            Checks to ensure that only contactId or messageId is supplied
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.GroupForCreationDto">
+            <summary>
+            The object required for creating a group
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.GroupForCreationDto.Title">
+            <summary>
+            The title for the group to be created. It is not unique
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.GroupForCreationDto.Contacts">
+            <summary>
+            An optional list of contacts
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.GroupForCreationDto.Messages">
+            <summary>
+            An optional list of messages
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.MessageDto">
+            <summary>
+            The object that represents a message and a draft
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.MessageDto.Id">
+            <summary>
+            The mesage Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.MessageDto.Message">
+            <summary>
+            The message body
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.MessageDto.SentTime">
+            <summary>
+            The sent time
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.MessageDto.IsDraft">
+            <summary>
+            A flag that checks if it is draft or a message
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.PasswordResetDto">
+            <summary>
+            This is the object required for changing a user's password
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.PasswordResetDto.Email">
+            <summary>
+            The user's email
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.PasswordResetDto.Phone">
+            <summary>
+            The user's phone number
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.PaymentVerificationDto">
+            <summary>
+            The input object for confirming payment
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.PaymentVerificationDto.UserId">
+            <summary>
+            The user's Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.PaymentVerificationDto.Email">
+            <summary>
+            The user's email address
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.PaymentVerificationDto.TransactionReference">
+            <summary>
+            The transaction code generated during payment
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.RetrieveUserDto">
+            <summary>
+            The object that defines the required fields for login
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.RetrieveUserDto.Email">
+            <summary>
+            The user's email address
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.RetrieveUserDto.PassWord">
+            <summary>
+            The user's password
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.SenderIdDto">
+            <summary>
+            The object used for requesting a sender Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.SenderIdDto.SenderId">
+            <summary>
+            The senderId being requested for. Must be less that or equal to 9 char
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.SenderIdDto.KeyId">
+            <summary>
+            The corresponding key
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.SenderIdDto.IsApproved">
+            <summary>
+            The flag to check if approved or not
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.TemplateDto">
+            <summary>
+            An object that represent a message template
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.TemplateDto.Id">
+            <summary>
+            The template Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.TemplateDto.Message">
+            <summary>
+            The templated message
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.UserDto">
+            <summary>
+            The structure of a returned user
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.Id">
+            <summary>
+            The user's Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.Surname">
+            <summary>
+            The user's Surname
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.OtherNames">
+            <summary>
+            The user's other names
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.Email">
+            <summary>
+            The user's email address
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.Phone">
+            <summary>
+            The user's phone number. In the nigerian format. without national code
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.SMSCredit">
+            <summary>
+            The amount of SMS unit the user currently has
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.VerificationCode">
+            <summary>
+            The code used for verifying the user
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.Token">
+            <summary>
+            The authentication token issued to the user
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.UserForCreationDto">
+            <summary>
+            The input format for creating a user
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForCreationDto.Surname">
+            <summary>
+            User's surname
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForCreationDto.OtherNames">
+            <summary>
+            User's other names
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForCreationDto.Email">
+            <summary>
+            User's email address
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForCreationDto.Phone">
+            <summary>
+            User's phone number. In Nigerian format (without country code)
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForCreationDto.Password">
+            <summary>
+            User's password with minimum length of 6 and max of 50
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForCreationDto.ComfirmPassword">
+            <summary>
+            Same value provided in the password field
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.UserForUpdateDto">
+            <summary>
+            The data object used for update a user
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForUpdateDto.Email">
+            <summary>
+            The user email's
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForUpdateDto.Phone">
+            <summary>
+            The user's phone number
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForUpdateDto.Password">
+            <summary>
+            The user's password
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForUpdateDto.ComfirmPassword">
+            <summary>
+            The same value passed in the password field
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForUpdateDto.SMSCredit">
+            <summary>
+            The user's smscredit
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.UserForVerificationDto">
+            <summary>
+            The required object used for verifying a user's account
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForVerificationDto.VerificationCode">
+            <summary>
+            The verification code sent to the user's contact details
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForVerificationDto.Email">
+            <summary>
+            The User's email address
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForVerificationDto.Phone">
+            <summary>
+            The user's phone number
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForVerificationDto.IsPasswordReset">
+            <summary>
+            A flag to checck whether is a first time verification or it's for a password reset verification
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Entities.Sender.KeyId">
+            <summary>
+            The mapping to the sms key that was used to request the sender id.
+            This value is passed by the client by checking the last 4 characters of the
+            sms key that was used to send the request.
+            if it ends with (Jx9c) pass 1. if it is (glIb) pass 2
+            </summary>
+        </member>
+    </members>
+</doc>
