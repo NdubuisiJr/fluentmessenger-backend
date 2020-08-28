@@ -1,6 +1,6 @@
 version: '3'
 volumes:
-  fluent_data: 
+  fluent_data:
 services:
   postgresdb:
     image: postgres
@@ -8,16 +8,65 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
-    volumes: 
+    volumes:
       - fluent_data:/var/lib/postgresql/data
-  fluentmessengerapi:
-    build: '.'
+  fluentone:
+    image: fluent_api 
     ports:
-      - "80:80"
-    depends_on: 
+      - "5000:80"
+    depends_on:
       - postgresdb
     environment:
       - HOST=${HOST}
       - USER_ID=${USER_ID}
       - USER_PASSWORD=${POSTGRES_PASSWORD}
+      - PORT=80
+
+  fluenttwo:
+    image: fluent_api 
+    ports:
+      - "5001:80"
+    depends_on:
+      - postgresdb
+    environment:
+      - HOST=${HOST}
+      - USER_ID=${USER_ID}
+      - USER_PASSWORD=${POSTGRES_PASSWORD}
+      - PORT=80
   
+  fluentthree:
+    image: fluent_api 
+    ports:
+      - "5002:80"
+    depends_on:
+      - postgresdb
+    environment:
+      - HOST=${HOST}
+      - USER_ID=${USER_ID}
+      - USER_PASSWORD=${POSTGRES_PASSWORD}
+      - PORT=80
+  
+  fluentfour:
+    image: fluent_api 
+    ports:
+      - "5003:80"
+    depends_on:
+      - postgresdb
+    environment:
+      - HOST=${HOST}
+      - USER_ID=${USER_ID}
+      - USER_PASSWORD=${POSTGRES_PASSWORD}
+      - PORT=80
+  
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - fluentone
+      - fluenttwo
+      - fluentthree
+      - fluentfour
+      - postgresdb
