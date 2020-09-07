@@ -3,7 +3,7 @@ volumes:
   fluent_data:
 services:
   postgresdb:
-    image: postgres
+    image: postgres:alpine
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:

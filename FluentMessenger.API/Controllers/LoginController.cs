@@ -174,7 +174,10 @@ namespace FluentMessenger.API.Controllers {
             return Ok(userDto);
         }
 
-        private UserDto GiveOutResources(UserDto userDto, User user) {
+        private UserDto GiveOutResources(UserDto userDto, User user) 
+            
+            
+            {
             (string, string) credentials;
             if (user.Sender is null){
                 credentials = ReturnServerCredentials();
