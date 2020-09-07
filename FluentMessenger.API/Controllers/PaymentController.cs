@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -48,7 +49,7 @@ namespace FluentMessenger.API.Controllers {
             ViewData["UserLastName"] = user.Surname;
             return View();
         }
-        
+
         /// <summary>
         /// This confirms the payment by the user and updates the user's smscredit
         /// </summary>
@@ -57,15 +58,15 @@ namespace FluentMessenger.API.Controllers {
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Index([FromBody] 
+        public async Task<IActionResult> Index([FromBody]
         PaymentVerificationDto paymentVerification) {
 
-            using(var httpClient=new HttpClient()) {
+            using (var httpClient = new HttpClient()) {
                 var url = "https://api.paystack.co/transaction?page=1&perPage=10";
-                httpClient.DefaultRequestHeaders.Authorization = 
+                httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue(
-                    scheme:"Bearer",
-                    parameter:_appSettings.Value.PayStackKey
+                    scheme: "Bearer",
+                    parameter: _appSettings.Value.PayStackKey
                 );
                 var response = await httpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode) {
@@ -75,7 +76,7 @@ namespace FluentMessenger.API.Controllers {
 
                     var transactionData = transactionDataContext.Data
                                           .Find(x => x.Reference == paymentVerification.TransactionReference);
-                    if (transactionData == null ) {
+                    if (transactionData == null) {
                         return NotFound($"Invalid transaction ID {paymentVerification.TransactionReference}");
                     }
 
@@ -84,7 +85,7 @@ namespace FluentMessenger.API.Controllers {
                         return NotFound("No user was found");
                     }
 
-                    if (user.Email == paymentVerification.Email 
+                    if (user.Email == paymentVerification.Email
                         && transactionData.Status == "success"
                         /*&& transactionData.Domain!= "test"*/) {
                         var numberOfUnits = transactionData.Amount / CostPerUnit;
@@ -94,7 +95,41 @@ namespace FluentMessenger.API.Controllers {
                     }
                 }
             }
-           return View();
+            return View();
+        }
+
+        /// <summary>
+        /// This confirms the payment by the user and updates the user's smscredit
+        /// </summary>
+        /// <param name="webhooksVerification">The input object for confirming payment</param>
+        /// <returns></returns>
+        [HttpPost("/confirm")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ConfirmPaymentFromWebhooks([FromBody]
+        WebhooksVerificationDto webhooksVerification) {
+
+            var customer = webhooksVerification.Data.Customer;
+
+            var user = _userRepo.GetAll(true).Where(x => x.Email == customer.Email &&
+                x.OtherNames == customer.First_Name && x.Surname == customer.Last_Name).FirstOrDefault();
+            if (user == null) {
+                return NotFound("No user was found");
+            }
+
+            // verify ip
+
+
+            // offer service
+            if (webhooksVerification.Event == "charge.success" 
+                && webhooksVerification.Data.Status == "success" 
+                && webhooksVerification.Data.Log.Success) {
+                var numberOfUnits = webhooksVerification.Data.Amount / CostPerUnit;
+                user.SMSCredit += numberOfUnits;
+                _userRepo.Update(user);
+                _userRepo.SaveChanges();
+            }
+            return View();
         }
 
         private const decimal CostPerUnit = 298;
