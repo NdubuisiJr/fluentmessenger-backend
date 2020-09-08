@@ -104,7 +104,7 @@ namespace FluentMessenger.API.Controllers {
         /// </summary>
         /// <param name="webhooksVerification">The input object for confirming payment</param>
         /// <returns></returns>
-        [HttpPost("/confirm")]
+        [HttpPost("confirm")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public  IActionResult ConfirmPaymentFromWebhooks([FromBody]

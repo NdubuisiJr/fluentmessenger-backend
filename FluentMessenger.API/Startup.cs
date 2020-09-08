@@ -20,7 +20,6 @@ using Microsoft.IdentityModel.Tokens;
 using Secret = FluentMessenger.API.Utils.Secret;
 using System.Reflection;
 using System.IO;
-using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace FluentMessenger.API {
     public class Startup {
