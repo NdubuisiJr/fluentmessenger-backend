@@ -10,8 +10,8 @@
 *.userosscache
 *.sln.docstates
 *.env
-certbot\
-dhparam\
+certbot/
+dhparam/
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
