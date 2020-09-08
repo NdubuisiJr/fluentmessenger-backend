@@ -109,7 +109,7 @@ namespace FluentMessenger.API.Controllers {
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public  IActionResult ConfirmPaymentFromWebhooks([FromBody]
         WebhooksVerificationDto webhooksVerification) {
-
+            Console.WriteLine(JsonConvert.SerializeObject(webhooksVerification, Formatting.Indented));
             // Verify event
             if(webhooksVerification == null || webhooksVerification.Event != "charge.success") {
                 Console.WriteLine("Wrong event");
@@ -118,7 +118,7 @@ namespace FluentMessenger.API.Controllers {
 
             // verify Ip
             var data = webhooksVerification.Data;
-            if(data.Ip_Address!= "52.31.139.75"|| data.Ip_Address!= "52.49.173.169"||data.Ip_Address!= "52.214.14.220") {
+            if(data.Ip_Address!= "52.31.139.75" && data.Ip_Address!= "52.49.173.169" && data.Ip_Address!= "52.214.14.220") {
                 Console.WriteLine("Wrong Ip address");
                 return Ok();
             }
@@ -142,7 +142,7 @@ namespace FluentMessenger.API.Controllers {
                 Console.WriteLine("Service offered");
             }
             ViewData["popup"] = "Your transaction was succesful. Please close this page and return to the application!";
-            return View();
+            return Ok();
         }
 
         private const decimal CostPerUnit = 298;
