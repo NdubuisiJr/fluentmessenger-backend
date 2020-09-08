@@ -109,7 +109,6 @@ namespace FluentMessenger.API.Controllers {
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public  IActionResult ConfirmPaymentFromWebhooks([FromBody]
         WebhooksVerificationDto webhooksVerification) {
-            Console.WriteLine(JsonConvert.SerializeObject(webhooksVerification, Formatting.Indented));
             // Verify event
             if(webhooksVerification == null || webhooksVerification.Event != "charge.success") {
                 Console.WriteLine("Wrong event");

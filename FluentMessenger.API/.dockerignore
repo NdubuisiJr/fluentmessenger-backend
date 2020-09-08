@@ -1,2 +1,10 @@
 bin\
+bin/
 obj\
+obj/
+static\
+static/
+dhparam\
+dhparam/
+certbot/
+certbot\
