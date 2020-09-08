@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -106,29 +107,41 @@ namespace FluentMessenger.API.Controllers {
         [HttpPost("/confirm")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ConfirmPaymentFromWebhooks([FromBody]
+        public  IActionResult ConfirmPaymentFromWebhooks([FromBody]
         WebhooksVerificationDto webhooksVerification) {
 
-            var customer = webhooksVerification.Data.Customer;
+            // Verify event
+            if(webhooksVerification == null || webhooksVerification.Event != "charge.success") {
+                Console.WriteLine("Wrong event");
+                return Ok();
+            }
 
+            // verify Ip
+            var data = webhooksVerification.Data;
+            if(data.Ip_Address!= "52.31.139.75"|| data.Ip_Address!= "52.49.173.169"||data.Ip_Address!= "52.214.14.220") {
+                Console.WriteLine("Wrong Ip address");
+                return Ok();
+            }
+
+            // Verify user
+            var customer = data.Customer;
             var user = _userRepo.GetAll(true).Where(x => x.Email == customer.Email &&
                 x.OtherNames == customer.First_Name && x.Surname == customer.Last_Name).FirstOrDefault();
             if (user == null) {
-                return NotFound("No user was found");
+                Console.WriteLine("Customer not found");
+                return Ok("No user was found");
             }
-
-            // verify ip
 
 
             // offer service
-            if (webhooksVerification.Event == "charge.success" 
-                && webhooksVerification.Data.Status == "success" 
-                && webhooksVerification.Data.Log.Success) {
-                var numberOfUnits = webhooksVerification.Data.Amount / CostPerUnit;
+            if (data.Status == "success" && data.Log.Success) {
+                var numberOfUnits = data.Amount / CostPerUnit;
                 user.SMSCredit += numberOfUnits;
                 _userRepo.Update(user);
                 _userRepo.SaveChanges();
+                Console.WriteLine("Service offered");
             }
+            ViewData["popup"] = "Your transaction was succesful. Please close this page and return to the application!";
             return View();
         }
 

@@ -25,8 +25,8 @@ function payWithPaystack() {
             ]
         },
         callback: function (response) {
-            let responseData = new ResponseObject(response.reference, userId, email);
-            PostRequest(responseData);
+            //let responseData = new ResponseObject(response.reference, userId, email);
+            //PostRequest(responseData);
             popup.innerHTML = "Your transaction was succesful. Please close this page and return to the application!";
         },
         onClose: function () {
@@ -36,15 +36,15 @@ function payWithPaystack() {
     handler.openIframe();
 }
 
-function PostRequest(object) {
-    const httpRequest = new XMLHttpRequest();
-    httpRequest.open("POST", "http://13.245.17.41:80/api/payment");
-    httpRequest.setRequestHeader("Content-Type", "application/json");
-    httpRequest.send(JSON.stringify(object));
-}
+//function PostRequest(object) {
+//    const httpRequest = new XMLHttpRequest();
+//    httpRequest.open("POST", "http://13.245.17.41:80/api/payment");
+//    httpRequest.setRequestHeader("Content-Type", "application/json");
+//    httpRequest.send(JSON.stringify(object));
+//}
 
-function ResponseObject(ref, userId, email) {
-    this.transactionReference = ref;
-    this.email = email;
-    this.UserId = userId;
-}
+//function ResponseObject(ref, userId, email) {
+//    this.transactionReference = ref;
+//    this.email = email;
+//    this.UserId = userId;
+//}
