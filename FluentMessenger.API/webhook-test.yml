@@ -1,4 +1,4 @@
-version: '3.4'
+﻿version: '3.4'
 volumes:
  fluent_data:
 
@@ -13,7 +13,7 @@ services:
    - fluent_data:/var/lib/postgresql/data
   
  fluentone:
-  image: fluent_api 
+  image: fluent_webhook_api 
   ports:
    - "5000:80"
   depends_on:
@@ -25,7 +25,7 @@ services:
    - PORT=80
     
  fluenttwo:
-  image: fluent_api 
+  image: fluent_webhook_api 
   ports:
    - "5001:80"
   depends_on:
@@ -37,7 +37,7 @@ services:
    - PORT=80
       
  fluentthree:
-  image: fluent_api 
+  image: fluent_webhook_api 
   ports:
    - "5002:80"
   depends_on:
@@ -49,7 +49,7 @@ services:
    - PORT=80
       
  fluentfour:
-  image: fluent_api 
+  image: fluent_webhook_api 
   ports:
    - "5003:80"
   depends_on:
