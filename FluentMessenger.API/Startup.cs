@@ -160,7 +160,7 @@ namespace FluentMessenger.API {
         private string BuildConnectionString() {
             var host = Environment.GetEnvironmentVariable("HOST") ?? "localhost";
             var userId = Environment.GetEnvironmentVariable("USER_ID") ?? "postgres";
-            var userPassword = Environment.GetEnvironmentVariable("USER_PASSWORD") ?? "Chukuigwe@1";
+            var userPassword = Environment.GetEnvironmentVariable("USER_PASSWORD") ?? "test";
             var database = "fluentDB";
             var connection = $"User ID={userId};Password={userPassword};Server={host};Port=5432;Database={database};Integrated Security=true;Pooling=true;";
             return connection;
