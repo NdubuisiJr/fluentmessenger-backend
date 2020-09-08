@@ -19,16 +19,23 @@ namespace FluentMessenger.API.Dtos {
         public string Channel { get; set; }
         public string Currency { get; set; }
         public string Ip_Address { get; set; }
-        public double MetaData { get; set; }
+        public object MetaData { get; set; }
         public Log Log { get; set; }
         public object Fees { get; set; }
+	public object Fees_Split{get;set;}
         public Customer Customer { get; set; }
         public Authorization Authorization { get; set; }
         public object Plan { get; set; }
+	public object Subaccount{get;set;}
+	public object split {get;set;}
+	public object Order_id{get;set;}
+	public object PaidAt{get;set;}
+	public object Requested_amount{get;set;}
 
     }
     public class Log {
         public double Time_Spent { get; set; }
+	public double Start_Time{get;set;}
         public int Attempts { get; set; }
         public string Authentication { get; set; }
         public int Errors { get; set; }
