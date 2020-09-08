@@ -17,7 +17,7 @@ namespace FluentMessenger.API.Controllers {
     [Route("api/payment")]
     public class PaymentController : Controller {
         private readonly IRepository<User> _userRepo;
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration; 
         private readonly IOptions<Secret> _appSettings;
 
         public PaymentController(IRepository<User> repositoryService,
