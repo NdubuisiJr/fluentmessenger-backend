@@ -109,7 +109,7 @@ namespace FluentMessenger.API.Controllers {
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public  IActionResult ConfirmPaymentFromWebhooks([FromBody] object body) {
-            // Verify event
+            // Verify event -- You should implement this as soon as possible
             //var ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             //Console.WriteLine("Ip = " + ip);
             //if(ip != "52.31.139.75" && ip!= "52.49.173.169" && ip != "52.214.14.220") {
@@ -150,7 +150,6 @@ namespace FluentMessenger.API.Controllers {
                 _userRepo.SaveChanges();
                 Console.WriteLine("Service offered");
             }
-            ViewData["popup"] = "Your transaction was succesful. Please close this page and return to the application!";
             return Ok();
         }
 
