@@ -132,8 +132,10 @@ namespace FluentMessenger.API.Controllers {
 
             // Verify user
             var customer = data.Customer;
-            var user = _userRepo.GetAll(true).Where(x => x.Email == customer.Email &&
-                x.OtherNames == customer.First_Name && x.Surname == customer.Last_Name).FirstOrDefault();
+            var sequence = $"{customer.Email}{customer.Last_Name}{customer.First_Name}";
+            var user = _userRepo.GetAll().FirstOrDefault(x =>
+                x.Email + x.Surname + x.OtherNames == sequence
+                || x.Email + x.OtherNames + x.Surname == sequence);
             if (user == null) {
                 Console.WriteLine("Customer not found");
                 return Ok("No user was found");
