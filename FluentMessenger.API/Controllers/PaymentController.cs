@@ -4,17 +4,13 @@ using FluentMessenger.API.Interfaces;
 using FluentMessenger.API.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FluentMessenger.API.Controllers {
@@ -114,15 +110,14 @@ namespace FluentMessenger.API.Controllers {
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public  IActionResult ConfirmPaymentFromWebhooks([FromBody] object body) {
             // Verify event
-            if(body == null || Request.Headers["X-Paystack-Signature"].ToString() == null) {
+            //var ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            //Console.WriteLine("Ip = " + ip);
+            //if(ip != "52.31.139.75" && ip!= "52.49.173.169" && ip != "52.214.14.220") {
+            //    Console.WriteLine("Not from paystack");
+            //    return Ok();
+            //}
+            if (body == null || Request.Headers["X-Paystack-Signature"].ToString() == null) {
                 Console.WriteLine("Wrong Request");
-                return Ok();
-            }
-
-            var ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            Console.WriteLine("Ip = " + ip);
-            if(ip != "52.31.139.75" && ip!= "52.49.173.169" && ip != "52.214.14.220") {
-                Console.WriteLine("Not from paystack");
                 return Ok();
             }
 
