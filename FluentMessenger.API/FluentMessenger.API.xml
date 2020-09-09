@@ -178,11 +178,11 @@
             <param name="paymentVerification">The input object for confirming payment</param>
             <returns></returns>
         </member>
-        <member name="M:FluentMessenger.API.Controllers.PaymentController.ConfirmPaymentFromWebhooks(FluentMessenger.API.Dtos.WebhooksVerificationDto)">
+        <member name="M:FluentMessenger.API.Controllers.PaymentController.ConfirmPaymentFromWebhooks(System.Object)">
             <summary>
             This confirms the payment by the user and updates the user's smscredit
             </summary>
-            <param name="webhooksVerification">The input object for confirming payment</param>
+            <param name="body">The input object for confirming payment</param>
             <returns></returns>
         </member>
         <member name="M:FluentMessenger.API.Controllers.SenderController.GetAll(System.Int32)">

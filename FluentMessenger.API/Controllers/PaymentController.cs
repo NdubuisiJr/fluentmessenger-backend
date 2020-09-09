@@ -4,13 +4,17 @@ using FluentMessenger.API.Interfaces;
 using FluentMessenger.API.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FluentMessenger.API.Controllers {
@@ -59,6 +63,7 @@ namespace FluentMessenger.API.Controllers {
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Obsolete]
         public async Task<IActionResult> Index([FromBody]
         PaymentVerificationDto paymentVerification) {
 
@@ -102,25 +107,32 @@ namespace FluentMessenger.API.Controllers {
         /// <summary>
         /// This confirms the payment by the user and updates the user's smscredit
         /// </summary>
-        /// <param name="webhooksVerification">The input object for confirming payment</param>
+        /// <param name="body">The input object for confirming payment</param>
         /// <returns></returns>
         [HttpPost("confirm")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public  IActionResult ConfirmPaymentFromWebhooks([FromBody]
-        WebhooksVerificationDto webhooksVerification) {
+        public  IActionResult ConfirmPaymentFromWebhooks([FromBody] object body) {
             // Verify event
-            if(webhooksVerification == null || webhooksVerification.Event != "charge.success") {
-                Console.WriteLine("Wrong event");
+            if(body == null) {
+                Console.WriteLine("Wrong Request");
                 return Ok();
             }
 
-            // verify Ip
-            var data = webhooksVerification.Data;
-            if(data.Ip_Address!= "52.31.139.75" && data.Ip_Address!= "52.49.173.169" && data.Ip_Address!= "52.214.14.220") {
-                Console.WriteLine("Wrong Ip address");
+            var webhooksVerification = JsonConvert.DeserializeObject<WebhooksVerificationDto>(body.ToString());
+
+            if (webhooksVerification.Event != "charge.success") {
+                Console.WriteLine("Wrong Event");
                 return Ok();
             }
+
+            // verify Request
+            if(!VerifyEvent(body.ToString())) {
+                Console.WriteLine("Wrong. Request not from paystack");
+                return Ok();
+            }
+
+            var data = webhooksVerification.Data;
 
             // Verify user
             var customer = data.Customer;
@@ -142,6 +154,28 @@ namespace FluentMessenger.API.Controllers {
             }
             ViewData["popup"] = "Your transaction was succesful. Please close this page and return to the application!";
             return Ok();
+        }
+
+        private bool VerifyEvent(string body) {
+            var key = _appSettings.Value.PayStackTestKey; //replace with your paystack secret_key
+            var jsonInput = body; //the json input
+            var inputString = Convert.ToString(new JValue(jsonInput));
+            var result = "";
+            var secretkeyBytes = Encoding.UTF8.GetBytes(key);
+            var inputBytes = Encoding.UTF8.GetBytes(inputString);
+            using (var hmac = new HMACSHA512(secretkeyBytes)) {
+                var hashValue = hmac.ComputeHash(inputBytes);
+                result = BitConverter.ToString(hashValue).Replace("-", string.Empty); ;
+            }
+            Console.WriteLine(result);
+            var xpaystackSignature = Request.Headers["X-Paystack-Signature"];  //put in the request's header value for x-paystack-signature
+
+            if (result.ToLower().Equals(xpaystackSignature)) {
+                return true;
+            }
+            else {
+                return false;
+            }
         }
 
         private const decimal CostPerUnit = 298;

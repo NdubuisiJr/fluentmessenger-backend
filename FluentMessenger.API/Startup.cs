@@ -21,6 +21,7 @@ using Secret = FluentMessenger.API.Utils.Secret;
 using System.Reflection;
 using System.IO;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace FluentMessenger.API {
     public class Startup {
