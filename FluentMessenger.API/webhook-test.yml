@@ -77,3 +77,4 @@ services:
    - ./dhparam:/etc/nginx/dhparam
    - ./certbot/conf:/etc/nginx/ssl
    - ./certbot/data:/usr/share/nginx/html/letsencrypt
+   - ./proxy.conf:/etc/nginx/proxy.conf

@@ -114,8 +114,15 @@ namespace FluentMessenger.API.Controllers {
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public  IActionResult ConfirmPaymentFromWebhooks([FromBody] object body) {
             // Verify event
-            if(body == null) {
+            if(body == null || Request.Headers["X-Paystack-Signature"].ToString() == null) {
                 Console.WriteLine("Wrong Request");
+                return Ok();
+            }
+
+            var ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            Console.WriteLine("Ip = " + ip);
+            if(ip != "52.31.139.75" && ip!= "52.49.173.169" && ip != "52.214.14.220") {
+                Console.WriteLine("Not from paystack");
                 return Ok();
             }
 
@@ -123,12 +130,6 @@ namespace FluentMessenger.API.Controllers {
 
             if (webhooksVerification.Event != "charge.success") {
                 Console.WriteLine("Wrong Event");
-                return Ok();
-            }
-
-            // verify Request
-            if(!VerifyEvent(body.ToString())) {
-                Console.WriteLine("Wrong. Request not from paystack");
                 return Ok();
             }
 
@@ -145,7 +146,7 @@ namespace FluentMessenger.API.Controllers {
 
 
             // offer service
-            if (data.Status == "success" && data.Log.Success) {
+            if (data.Status == "success" ) {
                 var numberOfUnits = data.Amount / CostPerUnit;
                 user.SMSCredit += numberOfUnits;
                 _userRepo.Update(user);
@@ -154,28 +155,6 @@ namespace FluentMessenger.API.Controllers {
             }
             ViewData["popup"] = "Your transaction was succesful. Please close this page and return to the application!";
             return Ok();
-        }
-
-        private bool VerifyEvent(string body) {
-            var key = _appSettings.Value.PayStackTestKey; //replace with your paystack secret_key
-            var jsonInput = body; //the json input
-            var inputString = Convert.ToString(new JValue(jsonInput));
-            var result = "";
-            var secretkeyBytes = Encoding.UTF8.GetBytes(key);
-            var inputBytes = Encoding.UTF8.GetBytes(inputString);
-            using (var hmac = new HMACSHA512(secretkeyBytes)) {
-                var hashValue = hmac.ComputeHash(inputBytes);
-                result = BitConverter.ToString(hashValue).Replace("-", string.Empty); ;
-            }
-            Console.WriteLine(result);
-            var xpaystackSignature = Request.Headers["X-Paystack-Signature"];  //put in the request's header value for x-paystack-signature
-
-            if (result.ToLower().Equals(xpaystackSignature)) {
-                return true;
-            }
-            else {
-                return false;
-            }
         }
 
         private const decimal CostPerUnit = 298;
