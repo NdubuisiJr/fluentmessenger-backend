@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -133,7 +134,7 @@ namespace FluentMessenger.API.Controllers {
             // Verify user
             var customer = data.Customer;
             var sequence = $"{customer.Email}{customer.Last_Name}{customer.First_Name}";
-            var user = _userRepo.GetAll().FirstOrDefault(x =>
+            var user = _userRepo.GetAll(true).FirstOrDefault(x =>
                 x.Email + x.Surname + x.OtherNames == sequence
                 || x.Email + x.OtherNames + x.Surname == sequence);
             if (user == null) {
@@ -146,6 +147,13 @@ namespace FluentMessenger.API.Controllers {
             if (data.Status == "success" ) {
                 var numberOfUnits = data.Amount / CostPerUnit;
                 user.SMSCredit += numberOfUnits;
+                var notifications = user.Notifications!=null?
+                    user.Notifications.ToList():new List<Notification>();
+                notifications.Add(new Notification {
+                    Text = $"Your {numberOfUnits} SMS units top up was successful.",
+                    User = user,
+                });
+                user.Notifications = notifications;
                 _userRepo.Update(user);
                 _userRepo.SaveChanges();
                 Console.WriteLine("Service offered");

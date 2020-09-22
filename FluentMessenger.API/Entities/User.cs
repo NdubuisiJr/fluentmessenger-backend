@@ -29,5 +29,7 @@ namespace FluentMessenger.API.Entities {
         public virtual IEnumerable<Group> Groups { get; set; }
 
         public virtual IEnumerable<MessageTemplate> MessageTemplates { get; set; }
+
+        public virtual IEnumerable<Notification> Notifications { get; set; }
     }
 }
