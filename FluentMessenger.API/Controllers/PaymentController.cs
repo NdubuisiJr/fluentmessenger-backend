@@ -109,7 +109,11 @@ namespace FluentMessenger.API.Controllers {
         [HttpPost("confirm")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public  IActionResult ConfirmPaymentFromWebhooks([FromBody] object body) {
+        public  IActionResult ConfirmPaymentFromWebhooks([FromBody] object body) 
+            
+            
+            
+            {
             // Verify event -- You should implement this as soon as possible
             //var ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             //Console.WriteLine("Ip = " + ip);
