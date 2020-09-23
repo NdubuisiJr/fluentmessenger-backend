@@ -1,4 +1,6 @@
-﻿namespace FluentMessenger.API.Dtos {
+﻿using System.Collections.Generic;
+
+namespace FluentMessenger.API.Dtos {
     /// <summary>
     /// The structure of a returned user
     /// </summary>
@@ -42,5 +44,10 @@
         /// The authentication token issued to the user
         /// </summary>
         public string Token { get; set; }
+
+        /// <summary>
+        /// The user's notifications
+        /// </summary>
+        public IEnumerable<NotificationDto> Notifications { get; set; }
     }
 }

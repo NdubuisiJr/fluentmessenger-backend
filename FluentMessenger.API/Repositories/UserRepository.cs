@@ -18,6 +18,7 @@ namespace FluentMessenger.API.Repositories {
             set.Include(x => x.Groups).Load();
             set.Include(x => x.MessageTemplates).Load();
             set.Include(x => x.Sender).Load();
+            set.Include(x => x.Notifications).Load();
             return set;
         }
         public User Get(int Id) {
@@ -30,6 +31,7 @@ namespace FluentMessenger.API.Repositories {
                 _dbContext.Entry(user).Collection(x => x.Groups).Load();
                 _dbContext.Entry(user).Collection(x => x.MessageTemplates).Load();
                 _dbContext.Entry(user).Reference(x => x.Sender).Load();
+                _dbContext.Entry(user).Collection(x => x.Notifications).Load();
             }
             return user;
         }
@@ -59,6 +61,7 @@ namespace FluentMessenger.API.Repositories {
             _dbContext.Entry(entity).Collection(x => x.Groups).Load();
             _dbContext.Entry(entity).Collection(x => x.MessageTemplates).Load();
             _dbContext.Entry(entity).Reference(x => x.Sender).Load();
+            _dbContext.Entry(entity).Collection(x => x.Notifications).Load();
             return entity;
         }
 

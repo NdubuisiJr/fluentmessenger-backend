@@ -163,6 +163,31 @@
             <param name="retrieveUserDto">The object required for login</param>
             <returns></returns>
         </member>
+        <member name="M:FluentMessenger.API.Controllers.NotificationController.Get(System.Int32,System.Int32)">
+            <summary>
+            Gets a user's notification given the notification Id
+            </summary>
+            <param name="userId">user's Id</param>
+            <param name="id">Notification Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.NotificationController.CreateNotification(System.Int32,FluentMessenger.API.Dtos.NotificationDto)">
+            <summary>
+            Creates a new notification entry into the database
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="notificationDto">The incoming notification object</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentMessenger.API.Controllers.NotificationController.Update(System.Int32,System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{FluentMessenger.API.Dtos.NotificationDto})">
+            <summary>
+            Updates a notification
+            </summary>
+            <param name="userId">The user's Id</param>
+            <param name="id">The notification Id</param>
+            <param name="patchDocument">the json patch document</param>
+            <returns></returns>
+        </member>
         <member name="M:FluentMessenger.API.Controllers.PaymentController.Index(System.Int32,System.Decimal)">
             <summary>
             Returns the payment page
@@ -398,6 +423,31 @@
             A flag that checks if it is draft or a message
             </summary>
         </member>
+        <member name="T:FluentMessenger.API.Dtos.NotificationDto">
+            <summary>
+            The structure of a returned Notification
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.NotificationDto.Id">
+            <summary>
+            The Notification Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.NotificationDto.UserId">
+            <summary>
+            The owner's Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.NotificationDto.Text">
+            <summary>
+            Text of the notification
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.NotificationDto.IsViewed">
+            <summary>
+            Indicates if the user has read it or not
+            </summary>
+        </member>
         <member name="T:FluentMessenger.API.Dtos.PasswordResetDto">
             <summary>
             This is the object required for changing a user's password
@@ -528,6 +578,11 @@
             The authentication token issued to the user
             </summary>
         </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.Notifications">
+            <summary>
+            The user's notifications
+            </summary>
+        </member>
         <member name="T:FluentMessenger.API.Dtos.UserForCreationDto">
             <summary>
             The input format for creating a user
@@ -591,6 +646,11 @@
         <member name="P:FluentMessenger.API.Dtos.UserForUpdateDto.SMSCredit">
             <summary>
             The user's smscredit
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserForUpdateDto.NotificationDto">
+            <summary>
+            The new notification object
             </summary>
         </member>
         <member name="T:FluentMessenger.API.Dtos.UserForVerificationDto">

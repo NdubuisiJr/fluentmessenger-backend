@@ -44,7 +44,7 @@ namespace FluentMessenger.API.Controllers {
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<UserDto>> GetUsers() {
-            return Ok(_mapper.Map<IEnumerable<UserDto>>(_userRepo.GetAll()));
+            return Ok(_mapper.Map<IEnumerable<UserDto>>(_userRepo.GetAll(true)));
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace FluentMessenger.API.Controllers {
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{userId}", Name = "GetUser")]
         public ActionResult<UserDto> GetUser(int userId) {
-            var user = _userRepo.Get(userId);
+            var user = _userRepo.Get(userId,true);
             if (user == null) {
                 return NotFound();
             }
@@ -129,16 +129,16 @@ namespace FluentMessenger.API.Controllers {
         public ActionResult UpdateUser(int userId,
             JsonPatchDocument<UserForUpdateDto> userForUpdatedDocument) {
 
-            var user = _userRepo.Get(userId);
+            var user = _userRepo.Get(userId, true);
 
             if (user == null) {
                 return NotFound();
             }
 
-            var operation = userForUpdatedDocument.Operations
+            var firstSpecialOperation = userForUpdatedDocument.Operations
                     .FirstOrDefault(x => x.OperationType == OperationType.Replace &&
                     x.path.ToLower() == "/password");
-                    
+
             var patchDto = _mapper.Map<UserForUpdateDto>(user);
             userForUpdatedDocument.ApplyTo(patchDto, ModelState);
             if (!TryValidateModel(patchDto)) {
@@ -147,7 +147,7 @@ namespace FluentMessenger.API.Controllers {
 
             _mapper.Map(patchDto, user);
 
-            if (operation is { }) {
+            if (firstSpecialOperation is { }) {
                 var newUser = SecureUser(user);
                 newUser.IsVerified = true;
             }

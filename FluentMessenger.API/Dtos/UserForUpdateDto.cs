@@ -38,5 +38,10 @@ namespace FluentMessenger.API.Dtos {
         /// The user's smscredit
         /// </summary>
         public decimal SMSCredit { get; set; }
+
+        /// <summary>
+        /// The new notification object
+        /// </summary>
+        public NotificationDto NotificationDto { get; set; }
     }
 }
