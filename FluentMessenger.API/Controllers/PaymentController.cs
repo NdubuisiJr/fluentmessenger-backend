@@ -156,6 +156,7 @@ namespace FluentMessenger.API.Controllers {
                 notifications.Add(new Notification {
                     Text = $"Your {numberOfUnits} SMS units top up was successful.",
                     User = user,
+                    Time = DateTime.Now
                 });
                 user.Notifications = notifications;
                 _userRepo.Update(user);
