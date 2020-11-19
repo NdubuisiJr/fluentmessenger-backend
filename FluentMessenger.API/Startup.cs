@@ -30,6 +30,16 @@ namespace FluentMessenger.API {
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
+
+            //Adds cors default policy
+            services.AddCors(options => {
+                options.AddDefaultPolicy(builder => {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+
             //Add the use of controllers and views. Chain NewtonsoftJon and xml serializers
             services.AddControllersWithViews(setupAction => {
                 setupAction.Filters.Add(new ProducesResponseTypeAttribute(
@@ -110,7 +120,7 @@ namespace FluentMessenger.API {
 
             //Add SecurityService
             services.AddScoped<ISecurityService, SecurityService>();
-            
+
             //Add swagger setup
             services.AddSwaggerGen(setupAction => {
                 setupAction.SwaggerDoc("Docs",
@@ -140,7 +150,10 @@ namespace FluentMessenger.API {
 
             app.UseRouting();
 
+            app.UseCors();
+
             app.UseAuthentication();
+
             app.UseAuthorization();
             if (env.IsDevelopment()) {
                 app.UseSwagger();

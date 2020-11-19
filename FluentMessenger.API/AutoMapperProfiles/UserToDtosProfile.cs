@@ -9,6 +9,7 @@ namespace FluentMessenger.API.AutoMapperProfiles {
             CreateMap<UserForCreationDto, User>();
             CreateMap<User, UserForUpdateDto>();
             CreateMap<UserForUpdateDto, User>();
+            CreateMap<User, UserAll>();
         }
     }
 }

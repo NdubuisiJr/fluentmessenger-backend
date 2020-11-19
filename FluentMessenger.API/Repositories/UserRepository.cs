@@ -29,6 +29,10 @@ namespace FluentMessenger.API.Repositories {
             var user = _dbContext.Users.Find(Id);
             if (user != null) {
                 _dbContext.Entry(user).Collection(x => x.Groups).Load();
+                foreach(var group in user.Groups) {
+                    _dbContext.Entry(group).Collection(x => x.Messages).Load();
+                    _dbContext.Entry(group).Collection(x => x.Contacts).Load();
+                }
                 _dbContext.Entry(user).Collection(x => x.MessageTemplates).Load();
                 _dbContext.Entry(user).Reference(x => x.Sender).Load();
                 _dbContext.Entry(user).Collection(x => x.Notifications).Load();

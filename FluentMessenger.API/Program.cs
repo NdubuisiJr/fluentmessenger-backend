@@ -33,6 +33,6 @@ namespace FluentMessenger.API {
 		        .ConfigureWebHostDefaults(webBuilder => {
                 var port=Environment.GetEnvironmentVariable("PORT")?? "8080";
                     webBuilder.UseStartup<Startup>().UseUrls("http://*:" + $"{port}");
-            });
+                });
     }
 }

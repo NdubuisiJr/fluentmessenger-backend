@@ -86,7 +86,7 @@ namespace FluentMessenger.API.Controllers {
         [HttpDelete("{groupId}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult DeleteUser(int userId, int groupId) {
+        public ActionResult DeleteGroup(int userId, int groupId) {
 
             var user = _userRepo.Get(userId, true);
             if (user == null) {

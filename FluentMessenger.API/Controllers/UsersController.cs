@@ -52,14 +52,18 @@ namespace FluentMessenger.API.Controllers {
         /// Requires Bearer Token on the Authorization Header
         /// </summary>
         /// <param name="userId">The user's Id</param>
+        /// <param name="pullAll">Indicates if every detail should be included</param>
         /// <returns>A userDto</returns>
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{userId}", Name = "GetUser")]
-        public ActionResult<UserDto> GetUser(int userId) {
+        public ActionResult<UserDto> GetUser(int userId, [FromQuery]bool pullAll) {
             var user = _userRepo.Get(userId,true);
             if (user == null) {
                 return NotFound();
+            }
+            if (pullAll) {
+                return Ok(_mapper.Map<UserAll>(user));
             }
             return Ok(_mapper.Map<UserDto>(user));
         }

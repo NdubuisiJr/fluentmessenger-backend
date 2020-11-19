@@ -95,7 +95,7 @@
             <param name="groupId">The Group's Id</param>
             <returns></returns>
         </member>
-        <member name="M:FluentMessenger.API.Controllers.GroupsController.DeleteUser(System.Int32,System.Int32)">
+        <member name="M:FluentMessenger.API.Controllers.GroupsController.DeleteGroup(System.Int32,System.Int32)">
             <summary>
             Delete's a group created by a user.\
             Requires Bearer's Token
@@ -247,12 +247,13 @@
              An array of users
             </returns>
         </member>
-        <member name="M:FluentMessenger.API.Controllers.UsersController.GetUser(System.Int32)">
+        <member name="M:FluentMessenger.API.Controllers.UsersController.GetUser(System.Int32,System.Boolean)">
             <summary>
             Returns a UserDto give the user's Id.\
             Requires Bearer Token on the Authorization Header
             </summary>
             <param name="userId">The user's Id</param>
+            <param name="pullAll">Indicates if every detail should be included</param>
             <returns>A userDto</returns>
         </member>
         <member name="M:FluentMessenger.API.Controllers.UsersController.CreateUser(FluentMessenger.API.Dtos.UserForCreationDto)">
@@ -531,6 +532,71 @@
         <member name="P:FluentMessenger.API.Dtos.TemplateDto.Message">
             <summary>
             The templated message
+            </summary>
+        </member>
+        <member name="T:FluentMessenger.API.Dtos.UserAll">
+            <summary>
+            The structure of a returned user
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserAll.Id">
+            <summary>
+            The user's Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserAll.Surname">
+            <summary>
+            The user's Surname
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserAll.OtherNames">
+            <summary>
+            The user's other names
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserAll.Email">
+            <summary>
+            The user's email address
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserAll.Phone">
+            <summary>
+            The user's phone number. In the nigerian format. without national code
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserAll.SMSCredit">
+            <summary>
+            The amount of SMS unit the user currently has
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserAll.VerificationCode">
+            <summary>
+            The code used for verifying the user
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserAll.Token">
+            <summary>
+            The authentication token issued to the user
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserAll.Sender">
+            <summary>
+            Sender Id
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserAll.Notifications">
+            <summary>
+            The user's notifications
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserAll.Groups">
+            <summary>
+            Groups
+            </summary>
+        </member>
+        <member name="P:FluentMessenger.API.Dtos.UserAll.MessageTemplates">
+            <summary>
+            Message Templates
             </summary>
         </member>
         <member name="T:FluentMessenger.API.Dtos.UserDto">
