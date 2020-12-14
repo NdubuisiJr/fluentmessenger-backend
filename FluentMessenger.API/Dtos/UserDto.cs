@@ -46,6 +46,11 @@ namespace FluentMessenger.API.Dtos {
         public string Token { get; set; }
 
         /// <summary>
+        /// The user's permissions
+        /// </summary>
+        public string Role { get; set; }
+
+        /// <summary>
         /// The user's notifications
         /// </summary>
         public IEnumerable<NotificationDto> Notifications { get; set; }

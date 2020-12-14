@@ -1,4 +1,5 @@
-﻿using FluentMessenger.API.Entities;
+﻿using FluentMessenger.API.Dtos;
+using FluentMessenger.API.Entities;
 using FluentMessenger.API.Interfaces;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Options;
@@ -16,8 +17,8 @@ namespace FluentMessenger.API.Utils {
             _appSettings = appSettings.Value;
         }
 
-        public string GenerateJwtToken(User user) {
-            // generate token that is valid for 7 days
+        public string GenerateJwtToken(UserDto user) {
+            // generate token that is valid for one Month
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.SigningKey);
             var tokenDescriptor = new SecurityTokenDescriptor {
@@ -25,7 +26,8 @@ namespace FluentMessenger.API.Utils {
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddMonths(1),
+                Expires = user.Role==Constants.ROLE? DateTime.UtcNow.AddHours(4):
+                                    DateTime.UtcNow.AddMonths(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                  SecurityAlgorithms.HmacSha256Signature)
             };

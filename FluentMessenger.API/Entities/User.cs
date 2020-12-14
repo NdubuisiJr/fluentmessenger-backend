@@ -18,6 +18,8 @@ namespace FluentMessenger.API.Entities {
         [Required]
         public string Password { get; set; }
 
+        public string Role { get; set; }
+
         public decimal SMSCredit { get; set; }
 
         public bool IsVerified { get; set; }

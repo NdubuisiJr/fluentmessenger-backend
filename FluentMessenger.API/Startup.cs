@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using Secret = FluentMessenger.API.Utils.Secret;
 using System.Reflection;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace FluentMessenger.API {
     public class Startup {
@@ -93,11 +94,13 @@ namespace FluentMessenger.API {
             }).AddJwtBearer(jwtBearerOptions => {
                 jwtBearerOptions.RequireHttpsMetadata = false;
                 jwtBearerOptions.SaveToken = true;
+
                 jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters() {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    ValidateLifetime=true
                 };
             });
 

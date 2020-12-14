@@ -644,6 +644,11 @@
             The authentication token issued to the user
             </summary>
         </member>
+        <member name="P:FluentMessenger.API.Dtos.UserDto.Role">
+            <summary>
+            The user's permissions
+            </summary>
+        </member>
         <member name="P:FluentMessenger.API.Dtos.UserDto.Notifications">
             <summary>
             The user's notifications

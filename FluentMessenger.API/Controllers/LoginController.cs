@@ -2,10 +2,12 @@
 using FluentMessenger.API.Dtos;
 using FluentMessenger.API.Entities;
 using FluentMessenger.API.Interfaces;
+using FluentMessenger.API.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 
@@ -13,18 +15,20 @@ namespace FluentMessenger.API.Controllers {
     [Authorize]
     [ApiController]
     [Route("api/")]
-    public class LoginController : ControllerBase {
+    public class LoginController : Controller {
         private readonly IRepository<User> _userRepo;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly ISecurityService _securityService;
+        private readonly Secret _appSettings;
 
         public LoginController(IRepository<User> repository, IMapper mapper,
-            IConfiguration configuration, ISecurityService securityService) {
+            IConfiguration configuration, ISecurityService securityService, IOptions<Secret> appSettings) {
             _userRepo = repository;
             _mapper = mapper;
             _configuration = configuration;
             _securityService = securityService;
+            _appSettings = appSettings.Value;
         }
 
         /// <summary>
@@ -120,7 +124,7 @@ namespace FluentMessenger.API.Controllers {
             if (user.IsVerified && !userForVerificationDto.IsPasswordReset) {
                 return UnprocessableEntity(new {
                     message = "User is verified already!",
-                    status="Verified already, Please login"
+                    status = "Verified already, Please login"
                 });
             }
 
@@ -159,7 +163,7 @@ namespace FluentMessenger.API.Controllers {
                 return UnprocessableEntity(new {
                     message = "Please verify your account",
                     status = "Not verified",
-                    user= _mapper.Map<UserDto>(user)
+                    user = _mapper.Map<UserDto>(user)
                 });
             }
 
@@ -169,24 +173,37 @@ namespace FluentMessenger.API.Controllers {
             }
 
             user = _userRepo.LoadRefrencesTypes(user);
-            var userDto = GiveOutResources(_mapper.Map<UserDto>(user), user);
+            var userDto = _mapper.Map<UserDto>(user);
+
+            if (user.Role == Constants.ROLE) {
+                GiveAdminResources(userDto);
+            }
+            else {
+                userDto = GiveOutResources(userDto, user);
+            }
 
             return Ok(userDto);
         }
 
-        private UserDto GiveOutResources(UserDto userDto, User user) 
-            
-            
-            {
+        private void GiveAdminResources(UserDto userDto) {
+            var token = _securityService.GenerateJwtToken(userDto);
+            userDto.Token = $"{token}{ISecurityService.SPLITER}" +
+                            $"{_configuration.GetConnectionString($"SMSKey1")}{ISecurityService.SPLITER}" +
+                            $"{_configuration.GetConnectionString($"SMSKey2")}{ISecurityService.SPLITER}"+
+                            $"{_appSettings.PayStackKey}";
+
+        }
+
+        private UserDto GiveOutResources(UserDto userDto, User user) {
             (string, string) credentials;
-            if (user.Sender is null){
+            if (user.Sender is null) {
                 credentials = ReturnServerCredentials();
             }
-            else if(!user.Sender.IsApproved){
+            else if (!user.Sender.IsApproved) {
                 var smsKey = _configuration.GetConnectionString($"SMSKey{user.Sender.KeyId}");
                 var smsId = _configuration.GetConnectionString($"SMSId{user.Sender.KeyId}");
-                credentials.Item1=smsKey;
-                credentials.Item2=smsId;
+                credentials.Item1 = smsKey;
+                credentials.Item2 = smsId;
             }
             else {
                 var smsId = user.Sender.SenderId;
@@ -194,7 +211,7 @@ namespace FluentMessenger.API.Controllers {
                 credentials.Item1 = smsKey;
                 credentials.Item2 = smsId;
             }
-            var token = _securityService.GenerateJwtToken(user);
+            var token = _securityService.GenerateJwtToken(userDto);
             var SmsKey = credentials.Item1;
             var SmsId = credentials.Item2;
             userDto.Token = $"{token}{ISecurityService.SPLITER}{SmsKey}{ISecurityService.SPLITER}{SmsId}";
