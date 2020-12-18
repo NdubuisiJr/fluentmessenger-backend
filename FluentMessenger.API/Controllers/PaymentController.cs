@@ -4,28 +4,26 @@ using FluentMessenger.API.Interfaces;
 using FluentMessenger.API.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace FluentMessenger.API.Controllers {
     [Route("api/payment")]
     public class PaymentController : Controller {
         private readonly IRepository<User> _userRepo;
-        private readonly IConfiguration _configuration; 
-        private readonly IOptions<Secret> _appSettings;
+        private readonly Secret _appSettings;
 
-        public PaymentController(IRepository<User> repositoryService,
-            IConfiguration configuration, IOptions<Secret> appSettings) {
+        public PaymentController(IRepository<User> repositoryService, IOptions<Secret> appSettings) {
             _userRepo = repositoryService;
-            _configuration = configuration;
-            _appSettings = appSettings;
+            _appSettings = appSettings.Value;
         }
 
         /// <summary>
@@ -69,7 +67,7 @@ namespace FluentMessenger.API.Controllers {
                 httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue(
                     scheme: "Bearer",
-                    parameter: _appSettings.Value.PayStackKey
+                    parameter: _appSettings.PayStackKey
                 );
                 var response = await httpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode) {
@@ -109,7 +107,7 @@ namespace FluentMessenger.API.Controllers {
         [HttpPost("confirm")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public  IActionResult ConfirmPaymentFromWebhooks([FromBody] object body) 
+        public async Task<IActionResult> ConfirmPaymentFromWebhooks([FromBody] object body) 
             
             
             
@@ -162,8 +160,53 @@ namespace FluentMessenger.API.Controllers {
                 _userRepo.Update(user);
                 _userRepo.SaveChanges();
                 Console.WriteLine("Service offered");
+
+
+                //Send Receipt
+                var to = user.Email; 
+                var from = _appSettings.Email;
+                var password = _appSettings.Password;
+
+                var amount = $"NGN {data.Amount/100}";
+                var name = $"{customer.First_Name} {customer.Last_Name}";
+                var time = $"{data.Paid_At}";
+                var channel = data.Channel;
+                var reference = data.Reference;
+
+                var template = System.IO.File.ReadAllText("receipt.html");
+                var messageBody = template;
+                messageBody = messageBody.Replace("[amount-paid]", amount);
+                messageBody = messageBody.Replace("[name-paid]", name);
+                messageBody = messageBody.Replace("[time-paid]", time);
+                messageBody = messageBody.Replace("[channel-paid]", channel);
+                messageBody = messageBody.Replace("[reference-paid]", reference);
+
+                await Task.Run(() => {
+                    SendToEmail(to, from, "Payment Receipt", messageBody, password);
+                });
             }
             return Ok();
+        }
+
+        public bool SendToEmail(string to, string from, string subject, string body, string password) {
+            try {
+                using var mailMessage = new MailMessage(from, to);
+                mailMessage.Subject = subject;
+                mailMessage.Body = body;
+                mailMessage.IsBodyHtml = true;
+                var smtp = new SmtpClient {
+                    Host = "smtp.gmail.com",
+                    EnableSsl = true
+                };
+                var networkCredential = new NetworkCredential(from, password);
+                smtp.Credentials = networkCredential;
+                smtp.Port = 587;
+                smtp.Send(mailMessage);
+                return true;
+            }
+            catch {
+            }
+            return false;
         }
 
         private const decimal CostPerUnit = 298;
