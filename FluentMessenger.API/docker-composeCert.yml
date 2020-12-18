@@ -1,0 +1,21 @@
+version: '3.4'
+services:
+ nginx:
+  image: nginx
+  ports:
+   - "80:80"
+   - "443:443"
+  volumes:
+   - ./static:/public_html
+   - ./nginx1.conf:/etc/nginx/nginx.conf
+   - ./dhparam:/etc/nginx/dhparam
+   - ./certbot/conf:/etc/nginx/ssl
+   - ./certbot/data:/usr/share/nginx/html/letsencrypt
+
+ certbot:
+  image: certbot/certbot
+  command: certonly --email ndubuisijrchukuigwe@gmail.com --webroot --webroot-path=/usr/share/nginx/html/letsencrypt -d fluentmessenger.com.ng
+  volumes:
+   - ./certbot/conf:/etc/letsencrypt
+   - ./certbot/logs:/var/log/letsencrypt
+   - ./certbot/data:/usr/share/nginx/html/letsencrypt
