@@ -107,11 +107,7 @@ namespace FluentMessenger.API.Controllers {
         [HttpPost("confirm")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult ConfirmPaymentFromWebhooks([FromBody] object body) 
-            
-            
-            
-            {
+        public IActionResult ConfirmPaymentFromWebhooks([FromBody] object body) {
             // Verify event -- You should implement this as soon as possible
             //var ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             //Console.WriteLine("Ip = " + ip);
@@ -136,9 +132,10 @@ namespace FluentMessenger.API.Controllers {
             // Verify user
             var customer = data.Customer;
             var sequence = $"{customer.Email}{customer.Last_Name}{customer.First_Name}";
-            var user = _userRepo.GetAll(true).FirstOrDefault(x =>x.Email ==customer.Email);
-//                x.Email + x.Surname + x.OtherNames == sequence
-//                || x.Email + x.OtherNames + x.Surname == sequence);
+            var user = _userRepo.GetAll(true).FirstOrDefault(x =>
+                           x.Email + x.Surname + x.OtherNames == sequence
+                          || x.Email + x.OtherNames + x.Surname == sequence);
+
             if (user == null) {
                 Console.WriteLine("Customer not found");
                 return Ok("No user was found");
@@ -146,11 +143,11 @@ namespace FluentMessenger.API.Controllers {
 
 
             // offer service
-            if (data.Status == "success" ) {
+            if (data.Status == "success") {
                 var numberOfUnits = data.Amount / CostPerUnit;
                 user.SMSCredit += numberOfUnits;
-                var notifications = user.Notifications!=null?
-                    user.Notifications.ToList():new List<Notification>();
+                var notifications = user.Notifications != null ?
+                    user.Notifications.ToList() : new List<Notification>();
                 notifications.Add(new Notification {
                     Text = $"Your {numberOfUnits} SMS units top up was successful.",
                     User = user,
@@ -159,66 +156,45 @@ namespace FluentMessenger.API.Controllers {
                 user.Notifications = notifications;
                 _userRepo.Update(user);
                 _userRepo.SaveChanges();
-                Console.WriteLine("Service offered");       
-	    }
+                Console.WriteLine("Service offered");
+                //SendReceipt(user, data, customer);
+            }
             return Ok();
         }
 
-	private void SendReceipt(User user, Data data, Customer customer){
-                var to = user.Email; 
-                var from = _appSettings.Email;
-                var password = _appSettings.Password;
-		Console.WriteLine(password);
-		Console.WriteLine(from);
-                var amount = $"NGN {data.Amount/100}";
-                var name = $"{customer.First_Name} {customer.Last_Name}";
-                var time = $"{data.Paid_At}";
-                var channel = data.Channel;
-                var reference = data.Reference;
-                var path = AppDomain.CurrentDomain.BaseDirectory + "wwwroot/receipt.html";
-                var template = System.IO.File.ReadAllText(path);
-                var messageBody = template;
-                messageBody = messageBody.Replace("[amount-paid]", amount);
-                messageBody = messageBody.Replace("[name-paid]", name);
-                messageBody = messageBody.Replace("[time-paid]", time);
-                messageBody = messageBody.Replace("[channel-paid]", channel);
-                messageBody = messageBody.Replace("[reference-paid]", reference);
-              
-		using var mailMessage = new MailMessage(from, to);
-                mailMessage.Subject = "Payment Receipt";
-                mailMessage.Body = messageBody;
-                mailMessage.IsBodyHtml = true;
-                var smtp = new SmtpClient {
-                    Host = "smtp.gmail.com",
-                    EnableSsl = true
-                };
-                var networkCredential = new NetworkCredential(from, password);
-                smtp.UseDefaultCredentials = false;
-		smtp.Port = 587;
-		smtp.Credentials = networkCredential;
-                smtp.Send(mailMessage);    
-	}
+        private void SendReceipt(User user, Data data, Customer customer) {
+            var to = user.Email;
+            var from = _appSettings.Email;
+            var password = _appSettings.Password;
+            Console.WriteLine(password);
+            Console.WriteLine(from);
+            var amount = $"NGN {data.Amount / 100}";
+            var name = $"{customer.First_Name} {customer.Last_Name}";
+            var time = $"{data.Paid_At}";
+            var channel = data.Channel;
+            var reference = data.Reference;
+            var path = AppDomain.CurrentDomain.BaseDirectory + "wwwroot/receipt.html";
+            var template = System.IO.File.ReadAllText(path);
+            var messageBody = template;
+            messageBody = messageBody.Replace("[amount-paid]", amount);
+            messageBody = messageBody.Replace("[name-paid]", name);
+            messageBody = messageBody.Replace("[time-paid]", time);
+            messageBody = messageBody.Replace("[channel-paid]", channel);
+            messageBody = messageBody.Replace("[reference-paid]", reference);
 
-        public bool SendToEmail(string to, string from, string subject, string body, string password) {
-            try {
-                using var mailMessage = new MailMessage(from, to);
-                mailMessage.Subject = subject;
-                mailMessage.Body = body;
-                mailMessage.IsBodyHtml = true;
-                var smtp = new SmtpClient {
-                    Host = "smtp.gmail.com",
-                    EnableSsl = true
-                };
-                var networkCredential = new NetworkCredential(from, password);
-                smtp.Credentials = networkCredential;
-                smtp.Port = 587;
-                smtp.Send(mailMessage);
-                Console.WriteLine("Got here");
-		return true;
-            }
-            catch {
-            }
-            return false;
+            using var mailMessage = new MailMessage(from, to);
+            mailMessage.Subject = "Payment Receipt";
+            mailMessage.Body = messageBody;
+            mailMessage.IsBodyHtml = true;
+            var smtp = new SmtpClient {
+                Host = "smtp.gmail.com",
+                EnableSsl = true
+            };
+            var networkCredential = new NetworkCredential(from, password);
+            smtp.UseDefaultCredentials = false;
+            smtp.Port = 587;
+            smtp.Credentials = networkCredential;
+            smtp.Send(mailMessage);
         }
 
         private const decimal CostPerUnit = 298;
