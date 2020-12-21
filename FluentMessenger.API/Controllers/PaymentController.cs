@@ -132,9 +132,9 @@ namespace FluentMessenger.API.Controllers {
             // Verify user
             var customer = data.Customer;
             var sequence = $"{customer.Email}{customer.Last_Name}{customer.First_Name}";
-            var user = _userRepo.GetAll(true).FirstOrDefault(x =>
-                           x.Email + x.Surname + x.OtherNames == sequence
-                          || x.Email + x.OtherNames + x.Surname == sequence);
+            var user = _userRepo.GetAll(true).FirstOrDefault(x => customer.Email == x.Email);
+                          // x.Email + x.Surname + x.OtherNames == sequence
+                          //|| x.Email + x.OtherNames + x.Surname == sequence);
 
             if (user == null) {
                 Console.WriteLine("Customer not found");
@@ -157,7 +157,7 @@ namespace FluentMessenger.API.Controllers {
                 _userRepo.Update(user);
                 _userRepo.SaveChanges();
                 Console.WriteLine("Service offered");
-                //SendReceipt(user, data, customer);
+                SendReceipt(user, data, customer);
             }
             return Ok();
         }
@@ -173,8 +173,7 @@ namespace FluentMessenger.API.Controllers {
             var time = $"{data.Paid_At}";
             var channel = data.Channel;
             var reference = data.Reference;
-            var path = AppDomain.CurrentDomain.BaseDirectory + "wwwroot/receipt.html";
-            var template = System.IO.File.ReadAllText(path);
+            var template = System.IO.File.ReadAllText("wwwroot/receipt.html");
             var messageBody = template;
             messageBody = messageBody.Replace("[amount-paid]", amount);
             messageBody = messageBody.Replace("[name-paid]", name);
