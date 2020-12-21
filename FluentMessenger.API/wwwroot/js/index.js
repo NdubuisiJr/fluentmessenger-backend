@@ -7,8 +7,7 @@ function payWithPaystack() {
     let userLastName = document.getElementById("user-lastname").innerHTML;
 
     var handler = PaystackPop.setup({
-      // key: 'pk_live_33a45eee229353b983184458f32ac03cf1a65ec5',
-       key:'pk_test_319b3e4208401e104e038abb88c70462f35b0278',
+        key: 'pk_live_33a45eee229353b983184458f32ac03cf1a65ec5',
 	    email: '' + email,
         amount: 1 * Number.parseFloat(amount),
         currency: "NGN",
