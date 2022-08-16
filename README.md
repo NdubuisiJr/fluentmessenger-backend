@@ -1,4 +1,4 @@
-# fluentmessenger-backend
+# fluentmessenger-backend (Legacy)
 
 A RESTful Backend Api for fluentmessenger/fluentSms application.
 
